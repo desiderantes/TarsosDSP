@@ -16,12 +16,12 @@ Java*](http://0110.be/files/attachments/411/aes53_tarsos_dsp.pdf), by Joren Six,
 AES Conference (AES 53rd)*, 2014. If you use TarsosDSP in academic research, please cite this paper.
 
 ```latex
-    @inproceedings{six2014tarsosdsp,
-      author      = {Joren Six and Olmo Cornelis and Marc Leman},
-      title       = {{TarsosDSP, a Real-Time Audio Processing Framework in Java}},
-      booktitle   = {{Proceedings of the 53rd AES Conference (AES 53rd)}}, 
-      year        =  2014
-    }
+@inproceedings{six2014tarsosdsp,
+  author      = {Joren Six and Olmo Cornelis and Marc Leman},
+  title       = {{TarsosDSP, a Real-Time Audio Processing Framework in Java}},
+  booktitle   = {{Proceedings of the 53rd AES Conference (AES 53rd)}}, 
+  year        =  2014
+}
 ```
 
 ## Quickly Getting Started with TarsosDSP
@@ -58,12 +58,11 @@ release](http://0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-Android-la
 Gradle includes jar files placed in that directory in your classpath.
 
 To check if this is the case look for the following lines in the `build.gradle` file in the module `app`:
-
-    <code>dependencies {
-        compile fileTree(dir: 'libs', include: ['*.jar'])
-    }
-    </code>
-
+```kotlin
+dependencies {
+    implementation(fileTree("dir" to "libs", "include" to listOf("*.jar")))
+}
+```
 For futher information, please consult [TarsosDSP on Android - Audio Processing in Java on
 Android](http://0110.be/posts/TarsosDSP_on_Android_-_Audio_Processing_in_Java_on_Android).
 
@@ -100,41 +99,42 @@ the library and how to use it.
 If you want to build from source, or want to improve TarsosDSP follow the instructions below. Contributions to TarsosDSP are more than
 welcome, if you have an algorithm to add or find a bug, do not hesitate to send me a message.
 
-TarsosDSP uses [Apache Ant](http://ant.apache.org/) as a build system. The instructions below detail how you can build from source. When
+TarsosDSP uses [Gradle](https://gradle.org/) as a build system. The instructions below detail how you can build from source. When
 everything runs correctly you should be able to run all example applications and have the latest version of the TarsosDSP library for
 inclusion in your projects. Also the Javadoc documentation for the API should be available.
 
-### TarsosDSP with Ant
+### TarsosDSP with Gradle
 
-To you need [Apache Ant](http://ant.apache.org/) and [git](http://git-scm.com/) installed on your system. The following
+To get started you need [git](http://git-scm.com/) and the [Android SDK](https://developer.android.com/studio) installed on your system. The following
 commands fetch the source and build the library and example jars:
 
-    <code>git clone https://JorenSix@github.com/JorenSix/TarsosDSP.git
-    cd TarsosDSP
-    cd build
-    ant tarsos_dsp_library #Builds the core TarsosDSP library
-    ant build_examples #Builds all the TarsosDSP examples
-    ant javadoc #Creates the documentation in TarsosDSP/doc
-    </code>
+```shell script
+git clone https://github.com/JorenSix/TarsosDSP.git
+cd TarsosDSP
+./gradlew jvm:build #Builds the core TarsosDSP library for the JVM
+./gradlew android:build #Builds the android TarsosDSP library (Additional config might be required)
+./gradlew build examples #Builds all the TarsosDSP examples
+./gradlew javadoc #Builds the documentation for TarsosDSP
+```
 
 ## Source Code Organization & Developing
 
-The library is separated into five source folders: 1) the main core functionality in `src/core`, TarsosDSP example applications in
-`src/examples`, unit tests in `src/test`, JVM audio I/O in `src/jvm` and Android audio I/O in `src/android`.
+The library is separated into four subprojects:
+ - The main core functionality in `common`
+ - TarsosDSP example applications in `examples`
+ - JVM components in `jvm`
+ - Android components in `android`.
 
-  - `src` contains the source files of the DSP library. 
-      - `src/core` contains the main core classes.
-      - `src/test` contains unit tests for some of the DSP functionality.
-      - `src/examples` contains a couple of example applications with a Java Swing user interface.
-      - `src/android` contains the source files for audio I/O on Android. It is dependent on the Android Runtime.
-      - `src/jvm` contains the source files for audio I/O on JRE. It is dependent on the Java Runtime Environment.
-      - `src/patcher` I/O for patcher environments like pure data and Max/MSP. It shows how TarsosDSP and pd, MaxMSP can connect.
-  - `build` contains ANT build files. Either to build Java documentation or runnable JAR-files for the example applications.
-  - `lib` although the TarsosDSP core does not require any external dependencies the `lib` folder does contain two jar-file to easily
-    run unit-tests (JUnit 4 and Hamcrest). It also contains a pure data library when one wants to develop for the pure data environment.
-
-To make development with Eclipse easy, make sure the subfolders of `src` are marked as “source folder”, and not the `src` folder itself (as is
-usually the case). For Android development exclude the `jvm` folder and include `android` and link to an Android runtime of your choosing.
+The source files are distributed in the following manner:
+  - `common` contains the source files of the DSP library. 
+      - `common/src/main/java` contains the main core classes.
+      - `common/src/test/java` contains unit tests for some of the DSP functionality.
+  - `examples` contains a couple of example applications with a Java Swing user interface.
+  - `android` contains the source files for audio I/O on Android. It is dependent on the Android Runtime.
+  - `jvm` contains the source files for audio I/O on JRE. It is dependent on the Java Runtime Environment.
+  - `oldSrc/patcher` I/O for patcher environments like pure data and Max/MSP. It shows how TarsosDSP and pd, MaxMSP can connect. It has not been ported to Gradle.
+  - `gradle` contains the Gradle wrapper.
+  - `build.gradle.kts` contains the main Gradle build file
 
 ## Credits
 
