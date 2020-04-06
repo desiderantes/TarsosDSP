@@ -7,7 +7,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:3.6.1")
+        classpath("com.android.tools.build:gradle:3.6.2")
         classpath("de.mannodermaus.gradle.plugins:android-junit5:1.6.0.0")
     }
 }
@@ -15,6 +15,7 @@ buildscript {
 plugins {
     id("com.android.library")
     id("de.mannodermaus.android-junit5")
+    kotlin("android")
 }
 android {
     compileSdkVersion(29)
@@ -72,7 +73,9 @@ tasks.withType<Test> {
 dependencies {
     val commonFixtures = testFixtures(project(":common"))
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    implementation("com.arthenica:mobile-ffmpeg-full:4.3.1")
     implementation("androidx.appcompat:appcompat:1.1.0")
+    implementation(kotlin("stdlib-jdk8"))
     api(project(":common"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.1")

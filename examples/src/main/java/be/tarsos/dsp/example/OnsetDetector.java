@@ -24,6 +24,8 @@
 
 package be.tarsos.dsp.example;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
@@ -61,7 +63,7 @@ import be.tarsos.dsp.onsets.ComplexOnsetDetector;
 import be.tarsos.dsp.onsets.OnsetHandler;
 
 
-public class OnsetDetector extends JFrame implements OnsetHandler {
+public class OnsetDetector extends JFrame implements OnsetHandler, TarsosDSPDemo {
 
     /**
      *
@@ -83,18 +85,12 @@ public class OnsetDetector extends JFrame implements OnsetHandler {
 
         JPanel inputPanel = new InputPanel();
         inputPanel.addPropertyChangeListener("mixer",
-                new PropertyChangeListener() {
-                    @Override
-                    public void propertyChange(PropertyChangeEvent arg0) {
-                        try {
-                            setNewMixer((Mixer) arg0.getNewValue());
-                        } catch (LineUnavailableException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        } catch (UnsupportedAudioFileException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+                arg0 -> {
+                    try {
+                        setNewMixer((Mixer) arg0.getNewValue());
+                    } catch (LineUnavailableException | UnsupportedAudioFileException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
                 });
 
@@ -126,20 +122,7 @@ public class OnsetDetector extends JFrame implements OnsetHandler {
 
     public static void main(String... strings) throws InterruptedException,
             InvocationTargetException {
-        SwingUtilities.invokeAndWait(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                } catch (Exception e) {
-                    //ignore failure to set default look en feel;
-                }
-                JFrame frame = new OnsetDetector();
-                frame.pack();
-                frame.setSize(640, 480);
-                frame.setVisible(true);
-            }
-        });
+       new OnsetDetector().start(strings);
     }
 
     private JSlider initialzeThresholdSlider() {
@@ -150,15 +133,12 @@ public class OnsetDetector extends JFrame implements OnsetHandler {
         thresholdSlider.setMajorTickSpacing(20);
         thresholdSlider.setMinorTickSpacing(10);
         thresholdSlider.setValue(25);
-        thresholdSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                if (!source.getValueIsAdjusting()) {
-                    threshold = source.getValue() / 100.0;
-                    if (onsetDetector != null) {
-                        onsetDetector.setThreshold(threshold);
-                    }
+        thresholdSlider.addChangeListener(e -> {
+            JSlider source = (JSlider) e.getSource();
+            if (!source.getValueIsAdjusting()) {
+                threshold = source.getValue() / 100.0;
+                if (onsetDetector != null) {
+                    onsetDetector.setThreshold(threshold);
                 }
             }
         });
@@ -241,6 +221,31 @@ public class OnsetDetector extends JFrame implements OnsetHandler {
         counter++;
         if (counter == clipList.size()) {
             Collections.shuffle(clipList);
+        }
+    }
+
+    @NotNull
+    @Override
+    public String getDescription() {
+        return "Onset Detector";
+    }
+
+    @Override
+    public void start(@NotNull String... args) {
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                try {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (Exception e) {
+                    //ignore failure to set default look en feel;
+                }
+                JFrame frame = this;
+                frame.pack();
+                frame.setSize(640, 480);
+                frame.setVisible(true);
+            });
+        } catch (InterruptedException | InvocationTargetException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -195,7 +195,7 @@ public class Spectrogram extends JFrame implements PitchDetectionHandler, Tarsos
 
     @Override
     public String getDescription() {
-        return null;
+        return "Spectrogram Example";
     }
 
     @Override

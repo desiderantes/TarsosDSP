@@ -142,7 +142,7 @@ public class AudioDispatcher implements Runnable {
         // The copy on write list allows concurrent modification of the list while
         // it is iterated. A nice feature to have when adding AudioProcessors while
         // the AudioDispatcher is running.
-        audioProcessors = new CopyOnWriteArrayList<AudioProcessor>();
+        audioProcessors = new CopyOnWriteArrayList<>();
         audioInputStream = stream;
 
         format = audioInputStream.getFormat();

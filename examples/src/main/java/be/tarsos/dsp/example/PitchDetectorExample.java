@@ -90,18 +90,15 @@ public class PitchDetectorExample extends JFrame implements PitchDetectionHandle
         JPanel inputPanel = new InputPanel();
         add(inputPanel);
         inputPanel.addPropertyChangeListener("mixer",
-                new PropertyChangeListener() {
-                    @Override
-                    public void propertyChange(PropertyChangeEvent arg0) {
-                        try {
-                            setNewMixer((Mixer) arg0.getNewValue());
-                        } catch (LineUnavailableException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        } catch (UnsupportedAudioFileException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+                arg0 -> {
+                    try {
+                        setNewMixer((Mixer) arg0.getNewValue());
+                    } catch (LineUnavailableException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (UnsupportedAudioFileException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
                 });
 
@@ -173,7 +170,7 @@ public class PitchDetectorExample extends JFrame implements PitchDetectionHandle
 
     @Override
     public String getDescription() {
-        return null;
+        return "Pitch Detection Example";
     }
 
     @Override

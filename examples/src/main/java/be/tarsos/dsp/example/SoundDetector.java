@@ -88,7 +88,7 @@ public class SoundDetector extends JFrame implements AudioProcessor, TarsosDSPDe
                 changeEvent -> {
                     try {
                         setNewMixer((Mixer) changeEvent.getNewValue());
-                    } catch (LineUnavailableException | UnsupportedAudioFileException e) {
+                    } catch (LineUnavailableException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
@@ -135,30 +135,23 @@ public class SoundDetector extends JFrame implements AudioProcessor, TarsosDSPDe
         thresholdSlider.setPaintTicks(true);
         thresholdSlider.setMajorTickSpacing(20);
         thresholdSlider.setMinorTickSpacing(10);
-        thresholdSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                threshold = source.getValue();
-                graphPanel.setThresholdLevel(threshold);
-                if (!source.getValueIsAdjusting()) {
-                    try {
-                        setNewMixer(currentMixer);
-                    } catch (LineUnavailableException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    } catch (UnsupportedAudioFileException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
+        thresholdSlider.addChangeListener(e -> {
+            JSlider source = (JSlider) e.getSource();
+            threshold = source.getValue();
+            graphPanel.setThresholdLevel(threshold);
+            if (!source.getValueIsAdjusting()) {
+                try {
+                    setNewMixer(currentMixer);
+                } catch (LineUnavailableException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
                 }
             }
         });
         return thresholdSlider;
     }
 
-    private void setNewMixer(Mixer mixer) throws LineUnavailableException,
-            UnsupportedAudioFileException {
+    private void setNewMixer(Mixer mixer) throws LineUnavailableException {
 
         if (dispatcher != null) {
             dispatcher.stop();
@@ -217,7 +210,7 @@ public class SoundDetector extends JFrame implements AudioProcessor, TarsosDSPDe
 
     @Override
     public String getDescription() {
-        return null;
+        return "Sound Detector Example";
     }
 
     @Override

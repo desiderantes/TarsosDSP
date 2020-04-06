@@ -152,7 +152,7 @@ public class UtterAsterisk extends JFrame implements PitchDetectionHandler, Tars
 
     @Override
     public String getDescription() {
-        return null;
+        return "Utter a sound";
     }
 
     @Override

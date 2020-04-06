@@ -23,6 +23,8 @@
 
 package be.tarsos.dsp.example;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.BorderLayout;
 import java.lang.reflect.InvocationTargetException;
 
@@ -46,7 +48,7 @@ import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import be.tarsos.dsp.wavelet.HaarWaveletCoder;
 import be.tarsos.dsp.wavelet.HaarWaveletDecoder;
 
-public class HaarWaveletAudioCompression extends JFrame {
+public class HaarWaveletAudioCompression extends JFrame implements TarsosDSPDemo{
 
     /**
      *
@@ -60,31 +62,28 @@ public class HaarWaveletAudioCompression extends JFrame {
     public HaarWaveletAudioCompression(final String source) {
         this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setTitle("HaarWavelet Wavelet Audio Compression Example");
+        this.setTitle(this.getDescription());
 
 
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    AudioDispatcher adp = AudioDispatcherFactory.fromPipe(source, 44100, 32, 0);
-                    AudioFormat format = JVMAudioInputStream.toAudioFormat(adp.getFormat());
-                    coder = new HaarWaveletCoder();
-                    HaarWaveletDecoder decoder = new HaarWaveletDecoder();
-                    gain = new GainProcessor(1.0);
-                    bithDeptProcessor = new BitDepthProcessor();
-                    bithDeptProcessor.setBitDepth(adp.getFormat().getSampleSizeInBits());
+        Runnable r = () -> {
+            try {
+                AudioDispatcher adp = AudioDispatcherFactory.fromPipe(source, 44100, 32, 0);
+                AudioFormat format = JVMAudioInputStream.toAudioFormat(adp.getFormat());
+                coder = new HaarWaveletCoder();
+                HaarWaveletDecoder decoder = new HaarWaveletDecoder();
+                gain = new GainProcessor(1.0);
+                bithDeptProcessor = new BitDepthProcessor();
+                bithDeptProcessor.setBitDepth(adp.getFormat().getSampleSizeInBits());
 
-                    adp.addAudioProcessor(coder);
-                    adp.addAudioProcessor(decoder);
-                    adp.addAudioProcessor(gain);
-                    adp.addAudioProcessor(bithDeptProcessor);
-                    adp.addAudioProcessor(new AudioPlayer(format));
-                    // start on a new thread
-                    new Thread(adp, "Audio processor").start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                adp.addAudioProcessor(coder);
+                adp.addAudioProcessor(decoder);
+                adp.addAudioProcessor(gain);
+                adp.addAudioProcessor(bithDeptProcessor);
+                adp.addAudioProcessor(new AudioPlayer(format));
+                // start on a new thread
+                new Thread(adp, "Audio processor").start();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         };
         new Thread(r, "Start processor").start();
@@ -104,15 +103,7 @@ public class HaarWaveletAudioCompression extends JFrame {
             source = "http://mp3.streampower.be/stubru-high.mp3";
         }
 
-        SwingUtilities.invokeAndWait(new Runnable() {
-            @Override
-            public void run() {
-                JFrame frame = new HaarWaveletAudioCompression(source);
-                frame.pack();
-                frame.setSize(450, 250);
-                frame.setVisible(true);
-            }
-        });
+       new HaarWaveletAudioCompression(source).start(args);
     }
 
     private JComponent createGainPanel() {
@@ -122,14 +113,11 @@ public class HaarWaveletAudioCompression extends JFrame {
         gainSlider.setPaintLabels(true);
         gainSlider.setPaintTicks(true);
         final JLabel label = new JLabel("Gain: 100%");
-        gainSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent arg0) {
-                double gainValue = gainSlider.getValue() / 100.0;
-                label.setText(String.format("Gain: %3d", gainSlider.getValue()) + "%");
-                if (gain != null)
-                    gain.setGain(gainValue);
-            }
+        gainSlider.addChangeListener(arg0 -> {
+            double gainValue = gainSlider.getValue() / 100.0;
+            label.setText(String.format("Gain: %3d", gainSlider.getValue()) + "%");
+            if (gain != null)
+                gain.setGain(gainValue);
         });
 
         JPanel gainPanel = new JPanel(new BorderLayout());
@@ -147,14 +135,11 @@ public class HaarWaveletAudioCompression extends JFrame {
         compressionSlider.setPaintLabels(true);
         compressionSlider.setPaintTicks(true);
         final JLabel label = new JLabel("Compression: 10");
-        compressionSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent arg0) {
-                int compressionValue = compressionSlider.getValue();
-                label.setText(String.format("Compression: %3d", compressionValue));
-                if (coder != null)
-                    coder.setCompression(compressionValue);
-            }
+        compressionSlider.addChangeListener(arg0 -> {
+            int compressionValue = compressionSlider.getValue();
+            label.setText(String.format("Compression: %3d", compressionValue));
+            if (coder != null)
+                coder.setCompression(compressionValue);
         });
 
         JPanel compressionPanel = new JPanel(new BorderLayout());
@@ -172,14 +157,11 @@ public class HaarWaveletAudioCompression extends JFrame {
         bitDepthcompressionSlider.setPaintLabels(true);
         bitDepthcompressionSlider.setPaintTicks(true);
         final JLabel label = new JLabel("Bit depth (bits): " + maxValue);
-        bitDepthcompressionSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent arg0) {
-                int bitDepth = bitDepthcompressionSlider.getValue();
-                label.setText(String.format("Bit depth (bits): %3d", bitDepth));
-                if (bithDeptProcessor != null)
-                    bithDeptProcessor.setBitDepth(bitDepth);
-            }
+        bitDepthcompressionSlider.addChangeListener(arg0 -> {
+            int bitDepth = bitDepthcompressionSlider.getValue();
+            label.setText(String.format("Bit depth (bits): %3d", bitDepth));
+            if (bithDeptProcessor != null)
+                bithDeptProcessor.setBitDepth(bitDepth);
         });
         JPanel compressionPanel = new JPanel(new BorderLayout());
         label.setToolTipText("Bit depth in bits.");
@@ -187,5 +169,25 @@ public class HaarWaveletAudioCompression extends JFrame {
         compressionPanel.add(bitDepthcompressionSlider, BorderLayout.CENTER);
         compressionPanel.setBorder(new TitledBorder("Bith depth control"));
         return compressionPanel;
+    }
+
+    @NotNull
+    @Override
+    public String getDescription() {
+        return "HaarWavelet Wavelet Audio Compression Example";
+    }
+
+    @Override
+    public void start(@NotNull String... args) {
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                JFrame frame = this;
+                frame.pack();
+                frame.setSize(450, 250);
+                frame.setVisible(true);
+            });
+        } catch (InterruptedException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 }

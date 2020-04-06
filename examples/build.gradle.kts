@@ -1,5 +1,6 @@
 plugins {
     java
+    kotlin("jvm")
     application
 }
 
@@ -13,6 +14,7 @@ repositories {
 dependencies {
     implementation(project(":jvm"))
     testImplementation(testFixtures(project(":common")))
+    implementation(kotlin("stdlib-jdk8"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.1")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.6.1")

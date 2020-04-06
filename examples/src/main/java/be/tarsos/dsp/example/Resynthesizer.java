@@ -23,6 +23,8 @@
 
 package be.tarsos.dsp.example;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -116,7 +118,7 @@ public class Resynthesizer {
         public GraphicalResynthesizer() {
             this.setLayout(new BorderLayout());
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setTitle("Pitch Estimation Synthesizer");
+            this.setTitle(getDescription());
 
             estimationGainSlider = new JSlider(0, 200);
             estimationGainSlider.setValue(100);
@@ -206,11 +208,11 @@ public class Resynthesizer {
 
         @Override
         public String getDescription() {
-            return null;
+            return "Pitch Estimation Synthesizer";
         }
 
         @Override
-        public void start(String... args) {
+        public void start(@NotNull String... args) {
             try {
                 SwingUtilities.invokeAndWait(() -> {
                     try {
@@ -275,7 +277,7 @@ public class Resynthesizer {
             byte[] sampleAsByteArray = new byte[2];
             for (int sample = 0; sample < numberOfSamples; sample++) {
                 stream.read(sampleAsByteArray);
-                byteBuffer[sample * 4 + 0] = sampleAsByteArray[0];
+                byteBuffer[sample * 4] = sampleAsByteArray[0];
                 byteBuffer[sample * 4 + 1] = sampleAsByteArray[1];
             }
 

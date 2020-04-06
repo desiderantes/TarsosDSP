@@ -100,7 +100,7 @@ public class Player implements AudioProcessor {
     public void play() {
         if (state == PlayerState.NO_FILE_LOADED) {
             throw new IllegalStateException("Can not play when no file is loaded");
-        } else if (state == PlayerState.PAUZED) {
+        } else if (state == PlayerState.PAUSED) {
             play(pauzedAt);
         } else {
             play(0);
@@ -146,22 +146,22 @@ public class Player implements AudioProcessor {
         }
     }
 
-    public void pauze() {
-        pauze(currentTime);
+    public void pause() {
+        pause(currentTime);
     }
 
-    public void pauze(double pauzeAt) {
-        if (state == PlayerState.PLAYING || state == PlayerState.PAUZED) {
-            setState(PlayerState.PAUZED);
+    public void pause(double pauseAt) {
+        if (state == PlayerState.PLAYING || state == PlayerState.PAUSED) {
+            setState(PlayerState.PAUSED);
             dispatcher.stop();
-            pauzedAt = pauzeAt;
+            pauzedAt = pauseAt;
         } else {
             throw new IllegalStateException("Can not pauze when nothing is playing");
         }
     }
 
     public void stop() {
-        if (state == PlayerState.PLAYING || state == PlayerState.PAUZED) {
+        if (state == PlayerState.PLAYING || state == PlayerState.PAUSED) {
             setState(PlayerState.STOPPED);
             dispatcher.stop();
         } else if (state != PlayerState.STOPPED) {
@@ -229,7 +229,7 @@ public class Player implements AudioProcessor {
      *
      * @author Joren Six
      */
-    public static enum PlayerState {
+    public enum PlayerState {
         /**
          * No file is loaded.
          */
@@ -245,7 +245,7 @@ public class Player implements AudioProcessor {
         /**
          * Audio play back is paused.
          */
-        PAUZED,
+        PAUSED,
         /**
          * Audio play back is stopped.
          */

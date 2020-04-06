@@ -23,6 +23,8 @@
 
 package be.tarsos.dsp.example;
 
+import org.jetbrains.annotations.NotNull;
+
 import be.tarsos.dsp.*;
 import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
 import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
@@ -241,7 +243,7 @@ public class PitchShiftingExample extends JFrame implements TarsosDSPDemo {
         dispatcher.run();
     }
 
-    private static final void printHelp(String error) {
+    private static void printHelp(String error) {
         SharedCommandLineUtilities.printPrefix();
         System.err.println("Name:");
         System.err.println("\tTarsosDSP Pitch shifting utility.");
@@ -334,11 +336,11 @@ public class PitchShiftingExample extends JFrame implements TarsosDSPDemo {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Pitch Shifting Example";
     }
 
     @Override
-    public void start(String... args) {
+    public void start(@NotNull String... args) {
         try {
             SwingUtilities.invokeAndWait(() -> {
                 try {

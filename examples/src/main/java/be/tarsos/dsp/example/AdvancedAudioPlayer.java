@@ -27,10 +27,6 @@ package be.tarsos.dsp.example;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
@@ -45,8 +41,6 @@ import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
@@ -156,7 +150,7 @@ public class AdvancedAudioPlayer extends JFrame implements TarsosDSPDemo {
         positionSlider.setEnabled(newState != PlayerState.NO_FILE_LOADED);
         playButton.setEnabled(newState != PlayerState.PLAYING && newState != PlayerState.NO_FILE_LOADED);
         pauzeButton.setEnabled(newState == PlayerState.PLAYING && newState != PlayerState.NO_FILE_LOADED);
-        stopButton.setEnabled((newState == PlayerState.PLAYING || newState == PlayerState.PAUZED) && newState != PlayerState.NO_FILE_LOADED);
+        stopButton.setEnabled((newState == PlayerState.PLAYING || newState == PlayerState.PAUSED) && newState != PlayerState.NO_FILE_LOADED);
 
         if (newState == PlayerState.STOPPED || newState == PlayerState.FILE_LOADED) {
             newPositionValue = 0;
@@ -187,7 +181,7 @@ public class AdvancedAudioPlayer extends JFrame implements TarsosDSPDemo {
                 } else {
                     double secondsToSkip = currentPosition;
                     PlayerState currentState = player.getState();
-                    player.pauze(secondsToSkip);
+                    player.pause(secondsToSkip);
                     if (currentState == PlayerState.PLAYING) {
                         player.play();
                     }
@@ -266,7 +260,7 @@ public class AdvancedAudioPlayer extends JFrame implements TarsosDSPDemo {
         fileChooserPanel.add(playButton);
 
         pauzeButton = new JButton("Pauze");
-        pauzeButton.addActionListener(actionEvent -> player.pauze());
+        pauzeButton.addActionListener(actionEvent -> player.pause());
         fileChooserPanel.add(pauzeButton);
 
         return fileChooserPanel;

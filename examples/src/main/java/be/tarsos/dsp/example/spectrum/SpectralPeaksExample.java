@@ -109,7 +109,7 @@ public class SpectralPeaksExample extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("Spectral Peaks");
 
-        spectalInfo = new ArrayList<SpectralInfo>();
+        spectalInfo = new ArrayList<>();
 
         JPanel subPanel = new JPanel();
         subPanel.add(createButtonPanel(startDir));
@@ -123,14 +123,11 @@ public class SpectralPeaksExample extends JFrame {
     }
 
     public static void main(String[] args) throws InvocationTargetException, InterruptedException, UnsupportedAudioFileException, LineUnavailableException, IOException {
-        SwingUtilities.invokeAndWait(new Runnable() {
-            @Override
-            public void run() {
-                SpectralPeaksExample frame = new SpectralPeaksExample(".");
-                frame.pack();
-                frame.setSize(450, 650);
-                frame.setVisible(true);
-            }
+        SwingUtilities.invokeAndWait(() -> {
+            SpectralPeaksExample frame = new SpectralPeaksExample(".");
+            frame.pack();
+            frame.setSize(450, 650);
+            frame.setVisible(true);
         });
     }
 
@@ -140,52 +137,43 @@ public class SpectralPeaksExample extends JFrame {
 
         final JFileChooser fileChooser = new JFileChooser(new File(startDir));
         final JButton chooseFileButton = new JButton("Open...");
-        chooseFileButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                int returnVal = fileChooser.showOpenDialog(SpectralPeaksExample.this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File file = fileChooser.getSelectedFile();
-                    System.out.println(file.toString());
-                    fileName = file.getAbsolutePath();
-                    startProcessing();
-                }
+        chooseFileButton.addActionListener(arg0 -> {
+            int returnVal = fileChooser.showOpenDialog(SpectralPeaksExample.this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                System.out.println(file.toString());
+                fileName = file.getAbsolutePath();
+                startProcessing();
             }
         });
         buttonPanel.add(new JLabel("Choose a file:"));
         buttonPanel.add(chooseFileButton);
 
         JComboBox<Integer> fftSizeComboBox = new JComboBox<Integer>(fftSizes);
-        fftSizeComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                @SuppressWarnings("unchecked")
-                Integer value = (Integer) ((JComboBox<Integer>) e.getSource()).getSelectedItem();
-                fftsize = value;
-                noiseFloorMedianFilterLenth = fftsize / 117;
-                System.out.println("FFT Changed to " + value + " median filter length to " + noiseFloorMedianFilterLenth);
-                startProcessing();
-            }
+        fftSizeComboBox.addActionListener(e -> {
+            @SuppressWarnings("unchecked")
+            Integer value = (Integer) ((JComboBox<Integer>) e.getSource()).getSelectedItem();
+            fftsize = value;
+            noiseFloorMedianFilterLenth = fftsize / 117;
+            System.out.println("FFT Changed to " + value + " median filter length to " + noiseFloorMedianFilterLenth);
+            startProcessing();
         });
         fftSizeComboBox.setSelectedIndex(3);
         buttonPanel.add(new JLabel("FFT-size:"));
         buttonPanel.add(fftSizeComboBox);
 
-        Integer value = new Integer(50);
-        Integer min = new Integer(32);
-        Integer max = new Integer(131072);
-        Integer step = new Integer(32);
+        Integer value = 50;
+        Integer min = 32;
+        Integer max = 131072;
+        Integer step = 32;
         SpinnerNumberModel model = new SpinnerNumberModel(value, min, max, step);
 
         JSpinner stepSizeSpinner = new JSpinner(model);
-        stepSizeSpinner.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                Integer value = (Integer) ((JSpinner) e.getSource()).getValue();
-                stepsize = value;
-                System.out.println("Step size Changed to " + value + ", overlap is " + (fftsize - stepsize));
-                startProcessing();
-            }
+        stepSizeSpinner.addChangeListener(e -> {
+            Integer value1 = (Integer) ((JSpinner) e.getSource()).getValue();
+            stepsize = value1;
+            System.out.println("Step size Changed to " + value1 + ", overlap is " + (fftsize - stepsize));
+            startProcessing();
         });
         stepSizeSpinner.setValue(512);
         buttonPanel.add(new JLabel("Step size:"));
@@ -193,14 +181,11 @@ public class SpectralPeaksExample extends JFrame {
 
 
         JComboBox<Integer> inputSampleRateCombobox = new JComboBox<Integer>(inputSampleRate);
-        inputSampleRateCombobox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                @SuppressWarnings("unchecked")
-                Integer value = (Integer) ((JComboBox<Integer>) e.getSource()).getSelectedItem();
-                sampleRate = value;
-                System.out.println("Sample rate Changed to " + value);
-            }
+        inputSampleRateCombobox.addActionListener(e -> {
+            @SuppressWarnings("unchecked")
+            Integer value12 = (Integer) ((JComboBox<Integer>) e.getSource()).getSelectedItem();
+            sampleRate = value12;
+            System.out.println("Sample rate Changed to " + value12);
         });
         inputSampleRateCombobox.setSelectedIndex(1);
         buttonPanel.add(new JLabel("Input sample rate"));
@@ -209,19 +194,16 @@ public class SpectralPeaksExample extends JFrame {
 
         JSlider noiseFloorSlider = new JSlider(100, 250);
         final JLabel noiseFloorFactorLabel = new JLabel("Noise floor factor    :");
-        noiseFloorSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                int newValue = source.getValue();
-                double actualValue = newValue / 100.0;
-                noiseFloorFactorLabel.setText(String.format("Noise floor factor (%.2f):", actualValue));
+        noiseFloorSlider.addChangeListener(e -> {
+            JSlider source = (JSlider) e.getSource();
+            int newValue = source.getValue();
+            double actualValue = newValue / 100.0;
+            noiseFloorFactorLabel.setText(String.format("Noise floor factor (%.2f):", actualValue));
 
-                System.out.println("New noise floor factor: " + actualValue);
-                noiseFloorFactor = (float) actualValue;
-                repaintSpectalInfo();
+            System.out.println("New noise floor factor: " + actualValue);
+            noiseFloorFactor = (float) actualValue;
+            repaintSpectalInfo();
 
-            }
         });
         noiseFloorSlider.setValue(150);
         buttonPanel.add(noiseFloorFactorLabel);
@@ -230,17 +212,14 @@ public class SpectralPeaksExample extends JFrame {
 
         JSlider medianFilterSizeSlider = new JSlider(3, 255);
         final JLabel medianFilterSizeLabel = new JLabel("Median Filter Size   :");
-        medianFilterSizeSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                int newValue = source.getValue();
-                medianFilterSizeLabel.setText(String.format("Median Filter Size (%d):", newValue));
-                System.out.println("New Median filter size: " + newValue);
-                noiseFloorMedianFilterLenth = newValue;
-                repaintSpectalInfo();
+        medianFilterSizeSlider.addChangeListener(e -> {
+            JSlider source = (JSlider) e.getSource();
+            int newValue = source.getValue();
+            medianFilterSizeLabel.setText(String.format("Median Filter Size (%d):", newValue));
+            System.out.println("New Median filter size: " + newValue);
+            noiseFloorMedianFilterLenth = newValue;
+            repaintSpectalInfo();
 
-            }
         });
         medianFilterSizeSlider.setValue(17);
         buttonPanel.add(medianFilterSizeLabel);
@@ -248,16 +227,13 @@ public class SpectralPeaksExample extends JFrame {
 
         JSlider minPeakSizeSlider = new JSlider(5, 255);
         final JLabel minPeakSizeLabel = new JLabel("Min Peak Size   :");
-        minPeakSizeSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                int newValue = source.getValue();
-                minPeakSizeLabel.setText(String.format("Min Peak Size    (%d):", newValue));
-                System.out.println("Min Peak Sizee: " + newValue);
-                minPeakSize = newValue;
-                repaintSpectalInfo();
-            }
+        minPeakSizeSlider.addChangeListener(e -> {
+            JSlider source = (JSlider) e.getSource();
+            int newValue = source.getValue();
+            minPeakSizeLabel.setText(String.format("Min Peak Size    (%d):", newValue));
+            System.out.println("Min Peak Sizee: " + newValue);
+            minPeakSize = newValue;
+            repaintSpectalInfo();
         });
         minPeakSizeSlider.setValue(5);
         buttonPanel.add(minPeakSizeLabel);
@@ -266,19 +242,16 @@ public class SpectralPeaksExample extends JFrame {
 
         JSlider numberOfPeaksSlider = new JSlider(1, 40);
         final JLabel numberOfPeaksLabel = new JLabel("Number of peaks  :");
-        numberOfPeaksSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                int newValue = source.getValue();
+        numberOfPeaksSlider.addChangeListener(e -> {
+            JSlider source = (JSlider) e.getSource();
+            int newValue = source.getValue();
 
-                numberOfPeaksLabel.setText("Number of peaks (" + newValue + "):");
+            numberOfPeaksLabel.setText("Number of peaks (" + newValue + "):");
 
-                System.out.println("New amount of peaks: " + newValue);
-                numberOfSpectralPeaks = newValue;
-                repaintSpectalInfo();
+            System.out.println("New amount of peaks: " + newValue);
+            numberOfSpectralPeaks = newValue;
+            repaintSpectalInfo();
 
-            }
         });
         numberOfPeaksSlider.setValue(7);
         buttonPanel.add(numberOfPeaksLabel);
@@ -288,18 +261,14 @@ public class SpectralPeaksExample extends JFrame {
         final JLabel frameLabel = new JLabel("Analysis frame (0):");
         frameSlider = new JSlider(0, 0);
         frameSlider.setEnabled(false);
-        frameSlider.addChangeListener(new ChangeListener() {
+        frameSlider.addChangeListener(e -> {
+            int newValue = ((JSlider) e.getSource()).getValue();
+            frameLabel.setText("Analysis frame (" + newValue + "):");
 
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int newValue = ((JSlider) e.getSource()).getValue();
-                frameLabel.setText("Analysis frame (" + newValue + "):");
-
-                currentFrame = newValue;
-                repaintSpectalInfo();
+            currentFrame = newValue;
+            repaintSpectalInfo();
 
 
-            }
         });
         buttonPanel.add(frameLabel);
         buttonPanel.add(frameSlider);
@@ -378,9 +347,7 @@ public class SpectralPeaksExample extends JFrame {
         if (fileName != null) {
             try {
                 extractPeakListList();
-            } catch (UnsupportedAudioFileException e) {
-                e.printStackTrace();
-            } catch (LineUnavailableException e) {
+            } catch (UnsupportedAudioFileException | LineUnavailableException e) {
                 e.printStackTrace();
             }
         }

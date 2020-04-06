@@ -80,18 +80,12 @@ public class PercussionDetector extends JFrame implements OnsetHandler, TarsosDS
 
         JPanel inputPanel = new InputPanel();
         inputPanel.addPropertyChangeListener("mixer",
-                new PropertyChangeListener() {
-                    @Override
-                    public void propertyChange(PropertyChangeEvent arg0) {
-                        try {
-                            setNewMixer((Mixer) arg0.getNewValue());
-                        } catch (LineUnavailableException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        } catch (UnsupportedAudioFileException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+                arg0 -> {
+                    try {
+                        setNewMixer((Mixer) arg0.getNewValue());
+                    } catch (LineUnavailableException | UnsupportedAudioFileException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
                 });
 
@@ -138,21 +132,15 @@ public class PercussionDetector extends JFrame implements OnsetHandler, TarsosDS
         thresholdSlider.setPaintTicks(true);
         thresholdSlider.setMajorTickSpacing(5);
         thresholdSlider.setMinorTickSpacing(1);
-        thresholdSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                if (!source.getValueIsAdjusting()) {
-                    threshold = source.getValue();
-                    try {
-                        setNewMixer(currentMixer);
-                    } catch (LineUnavailableException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    } catch (UnsupportedAudioFileException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
+        thresholdSlider.addChangeListener(e -> {
+            JSlider source = (JSlider) e.getSource();
+            if (!source.getValueIsAdjusting()) {
+                threshold = source.getValue();
+                try {
+                    setNewMixer(currentMixer);
+                } catch (LineUnavailableException | UnsupportedAudioFileException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
                 }
             }
         });
@@ -166,21 +154,15 @@ public class PercussionDetector extends JFrame implements OnsetHandler, TarsosDS
         sensitivitySlider.setPaintTicks(true);
         sensitivitySlider.setMajorTickSpacing(20);
         sensitivitySlider.setMinorTickSpacing(10);
-        sensitivitySlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                if (!source.getValueIsAdjusting()) {
-                    sensitivity = source.getValue();
-                    try {
-                        setNewMixer(currentMixer);
-                    } catch (LineUnavailableException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    } catch (UnsupportedAudioFileException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
+        sensitivitySlider.addChangeListener(e -> {
+            JSlider source = (JSlider) e.getSource();
+            if (!source.getValueIsAdjusting()) {
+                sensitivity = source.getValue();
+                try {
+                    setNewMixer(currentMixer);
+                } catch (LineUnavailableException | UnsupportedAudioFileException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
                 }
             }
         });
@@ -204,10 +186,7 @@ public class PercussionDetector extends JFrame implements OnsetHandler, TarsosDS
                 System.out.println(clipName);
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (LineUnavailableException e) {
+            } catch (IOException | LineUnavailableException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
@@ -272,7 +251,7 @@ public class PercussionDetector extends JFrame implements OnsetHandler, TarsosDS
 
     @Override
     public String getDescription() {
-        return null;
+        return "Percussion Detector";
     }
 
     @Override

@@ -23,6 +23,8 @@
 
 package be.tarsos.dsp.example;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.BorderLayout;
 import java.lang.reflect.InvocationTargetException;
 
@@ -46,7 +48,7 @@ import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import be.tarsos.dsp.wavelet.lift.Daubechies4WaveletCoder;
 import be.tarsos.dsp.wavelet.lift.Daubechies4WaveletDecoder;
 
-public class Daubechies4WaveletAudioCompression extends JFrame {
+public class Daubechies4WaveletAudioCompression extends JFrame implements TarsosDSPDemo {
 
     /**
      *
@@ -102,16 +104,7 @@ public class Daubechies4WaveletAudioCompression extends JFrame {
         } else {
             source = "http://mp3.streampower.be/stubru-high.mp3";
         }
-
-        SwingUtilities.invokeAndWait(new Runnable() {
-            @Override
-            public void run() {
-                JFrame frame = new Daubechies4WaveletAudioCompression(source);
-                frame.pack();
-                frame.setSize(450, 250);
-                frame.setVisible(true);
-            }
-        });
+        new Daubechies4WaveletAudioCompression(source).start(args);
     }
 
     private JComponent createGainPanel() {
@@ -184,7 +177,27 @@ public class Daubechies4WaveletAudioCompression extends JFrame {
         label.setToolTipText("Bit depth in bits.");
         compressionPanel.add(label, BorderLayout.NORTH);
         compressionPanel.add(bitDepthcompressionSlider, BorderLayout.CENTER);
-        compressionPanel.setBorder(new TitledBorder("Bith depth control"));
+        compressionPanel.setBorder(new TitledBorder("Bit depth control"));
         return compressionPanel;
+    }
+
+    @NotNull
+    @Override
+    public String getDescription() {
+        return "Daubechies4Wavelet Audio Compression";
+    }
+
+    @Override
+    public void start(@NotNull String... args) {
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                JFrame frame = this;
+                frame.pack();
+                frame.setSize(450, 250);
+                frame.setVisible(true);
+            });
+        } catch (InterruptedException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 }

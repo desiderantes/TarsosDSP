@@ -24,6 +24,8 @@
 
 package be.tarsos.dsp.example;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -61,7 +63,7 @@ import be.tarsos.dsp.pitch.Goertzel.FrequenciesDetectedHandler;
  *
  * @author Joren Six
  */
-public class GoertzelDTMF extends JFrame implements ActionListener {
+public class GoertzelDTMF extends JFrame implements ActionListener, TarsosDSPDemo {
     /**
      *
      */
@@ -98,9 +100,6 @@ public class GoertzelDTMF extends JFrame implements ActionListener {
             if (DTMF.isDTMFCharacter(event.getKeyChar())) {
                 try {
                     process(event.getKeyChar());
-                } catch (UnsupportedAudioFileException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
                 } catch (LineUnavailableException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -153,20 +152,7 @@ public class GoertzelDTMF extends JFrame implements ActionListener {
     }
 
     public static void main(String... strings) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                } catch (Exception e) {
-                    //ignore failure to set default look & feel;
-                }
-                JFrame frame = new GoertzelDTMF();
-                frame.pack();
-                frame.setSize(200, 420);
-                frame.setVisible(true);
-            }
-        });
+       new GoertzelDTMF().start(strings);
     }
 
     @Override
@@ -175,9 +161,6 @@ public class GoertzelDTMF extends JFrame implements ActionListener {
         //System.out.println(button.getText().charAt(0));
         try {
             process(button.getText().charAt(0));
-        } catch (UnsupportedAudioFileException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         } catch (LineUnavailableException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -188,10 +171,9 @@ public class GoertzelDTMF extends JFrame implements ActionListener {
      * Process a DTMF character: generate sound and decode the sound.
      *
      * @param character The character.
-     * @throws UnsupportedAudioFileException
      * @throws LineUnavailableException
      */
-    public void process(char character) throws UnsupportedAudioFileException, LineUnavailableException {
+    public void process(char character) throws LineUnavailableException {
         final float[] floatBuffer = DTMF.generateDTMFTone(character);
         final AudioFormat format = new AudioFormat(44100, 16, 1, true, false);
         JVMAudioInputStream.toTarsosDSPFormat(format);
@@ -206,5 +188,26 @@ public class GoertzelDTMF extends JFrame implements ActionListener {
         dispatcher.addAudioProcessor(new AudioPlayer(format));
         new Thread(dispatcher).start();
 
+    }
+
+    @NotNull
+    @Override
+    public String getDescription() {
+        return "An example of DTMF ( Dual-tone multi-frequency signaling ) decoding with the Goertzel algorithm";
+    }
+
+    @Override
+    public void start(@NotNull String... args) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception e) {
+                //ignore failure to set default look & feel;
+            }
+            JFrame frame = this;
+            frame.pack();
+            frame.setSize(200, 420);
+            frame.setVisible(true);
+        });
     }
 }

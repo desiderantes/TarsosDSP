@@ -1,5 +1,6 @@
 plugins {
     `java-library`
+    kotlin("jvm")
 }
 
 group = "be.tarsos.dsp"
@@ -11,6 +12,7 @@ repositories {
 
 dependencies {
     api(project(":common"))
+    implementation(kotlin("stdlib-jdk8"))
     testImplementation(testFixtures(project(":common")))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.1")

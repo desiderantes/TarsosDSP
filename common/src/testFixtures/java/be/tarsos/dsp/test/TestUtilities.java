@@ -70,27 +70,22 @@ public class TestUtilities {
 
     public static InputStream fluteFile() {
         String file = "flute.novib.ff.A4.wav";
-
-        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        return classLoader.getResourceAsStream(file);
+        return streamFromFilename(file);
     }
 
     public static InputStream ccirFile() {
         String file = "CCIR_04221.ogg";
-        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        return classLoader.getResourceAsStream(file);
+        return streamFromFilename(file);
     }
 
     public static InputStream onsetsAudioFile() {
         String file = "NR45.wav";
-        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        return classLoader.getResourceAsStream(file);
+        return streamFromFilename(file);
     }
 
     public static InputStream sineOf4000Samples() {
         String file = "4000_samples_of_440Hz_at_44.1kHz.wav";
-        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        return classLoader.getResourceAsStream(file);
+        return streamFromFilename(file);
     }
 
     public static File sineOf4000SamplesFile(){
@@ -101,6 +96,11 @@ public class TestUtilities {
         }catch (Exception e) {
             return null;
         }
+    }
+
+    public static InputStream streamFromFilename(String filename){
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        return classLoader.getResourceAsStream(filename);
     }
 
 

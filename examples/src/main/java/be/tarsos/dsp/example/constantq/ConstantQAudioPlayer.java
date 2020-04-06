@@ -185,17 +185,17 @@ public class ConstantQAudioPlayer extends JPanel implements TarsosDSPDemo {
             waveForm.repaint();
             constantQ.repaint();
         };
-        waveForm.getViewPort().addViewPortChangedListener(newViewPort -> {
+        waveForm.viewPort.addViewPortChangedListener(newViewPort -> {
             constantQCS.setMin(Axis.X, waveFormCS.getMin(Axis.X));
             constantQCS.setMax(Axis.X, waveFormCS.getMax(Axis.X));
         });
-        waveForm.getViewPort().addViewPortChangedListener(listener);
+        waveForm.viewPort.addViewPortChangedListener(listener);
 
-        constantQ.getViewPort().addViewPortChangedListener(newViewPort -> {
+        constantQ.viewPort.addViewPortChangedListener(newViewPort -> {
             waveFormCS.setMin(Axis.X, constantQCS.getMin(Axis.X));
             waveFormCS.setMax(Axis.X, constantQCS.getMax(Axis.X));
         });
-        constantQ.getViewPort().addViewPortChangedListener(listener);
+        constantQ.viewPort.addViewPortChangedListener(listener);
 
         return splitPane;
     }

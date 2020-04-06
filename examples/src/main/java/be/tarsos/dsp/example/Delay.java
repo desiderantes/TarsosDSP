@@ -24,6 +24,8 @@
 
 package be.tarsos.dsp.example;
 
+import org.jetbrains.annotations.NotNull;
+
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.GainProcessor;
 import be.tarsos.dsp.effects.DelayEffect;
@@ -175,11 +177,11 @@ public class Delay extends JFrame implements TarsosDSPDemo {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Delay Demo";
     }
 
     @Override
-    public void start(String... args) {
+    public void start(@NotNull String... args) {
         try {
             SwingUtilities.invokeAndWait(() -> {
                 try {

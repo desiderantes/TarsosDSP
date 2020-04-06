@@ -1,9 +1,12 @@
 package be.tarsos.dsp.example;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.swing.JButton;
@@ -11,6 +14,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -21,7 +25,7 @@ import be.tarsos.dsp.granulator.OptimizedGranulator;
 import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
 
-public class GranulatorExample extends JFrame {
+public class GranulatorExample extends JFrame implements TarsosDSPDemo {
 
     /**
      *
@@ -51,85 +55,64 @@ public class GranulatorExample extends JFrame {
 
         final JFileChooser fileChooser = new JFileChooser();
         final JButton openFileButton = new JButton("Open file...");
-        openFileButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                int returnVal = fileChooser.showOpenDialog(GranulatorExample.this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File file = fileChooser.getSelectedFile();
-                    openFile(file.getAbsolutePath());
-                } else {
-                    //canceled
-                }
+        openFileButton.addActionListener(arg0 -> {
+            int returnVal = fileChooser.showOpenDialog(GranulatorExample.this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                openFile(file.getAbsolutePath());
+            } else {
+                //canceled
             }
         });
 
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        timeStretchSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent arg0) {
-                float currentFactor = (float) timeStretchSlider.getValue() / 1000.0f;
-                timeStretchLabel.setText(String.format(
-                        "Time stretch factor: %.1f", currentFactor * 100));
-                if (granulator != null)
-                    granulator.setTimestretchFactor(currentFactor);
-            }
+        timeStretchSlider.addChangeListener(arg0 -> {
+            float currentFactor = (float) timeStretchSlider.getValue() / 1000.0f;
+            timeStretchLabel.setText(String.format(
+                    "Time stretch factor: %.1f", currentFactor * 100));
+            if (granulator != null)
+                granulator.setTimestretchFactor(currentFactor);
         });
 
-        pitchShiftSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent arg0) {
-                float currentFactor = (float) pitchShiftSlider.getValue() / 1000.0f;
-                pitchShiftLabel.setText(String.format(
-                        "Pitch shift factor: %.1f", currentFactor * 100));
-                if (granulator != null)
-                    granulator.setPitchShiftFactor(currentFactor);
-            }
+        pitchShiftSlider.addChangeListener(arg0 -> {
+            float currentFactor = (float) pitchShiftSlider.getValue() / 1000.0f;
+            pitchShiftLabel.setText(String.format(
+                    "Pitch shift factor: %.1f", currentFactor * 100));
+            if (granulator != null)
+                granulator.setPitchShiftFactor(currentFactor);
         });
 
-        grainIntervallSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent arg0) {
-                int grainInterval = grainIntervallSlider.getValue();
-                grainIntervalLabel.setText(String.format(
-                        "Grain interval (ms): %d", grainInterval));
-                if (granulator != null)
-                    granulator.setGrainInterval(grainInterval);
-            }
+        grainIntervallSlider.addChangeListener(arg0 -> {
+            int grainInterval = grainIntervallSlider.getValue();
+            grainIntervalLabel.setText(String.format(
+                    "Grain interval (ms): %d", grainInterval));
+            if (granulator != null)
+                granulator.setGrainInterval(grainInterval);
         });
 
-        grainSizeSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent arg0) {
-                int grainSize = grainSizeSlider.getValue();
-                grainSizeLabel.setText(String.format(
-                        "Grain size (ms): %d", grainSize));
-                if (granulator != null)
-                    granulator.setGrainSize(grainSize);
-            }
+        grainSizeSlider.addChangeListener(arg0 -> {
+            int grainSize = grainSizeSlider.getValue();
+            grainSizeLabel.setText(String.format(
+                    "Grain size (ms): %d", grainSize));
+            if (granulator != null)
+                granulator.setGrainSize(grainSize);
         });
 
-        grainRandomnesslSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent arg0) {
-                float grainRandomness = (float) grainRandomnesslSlider.getValue() / 1000.0f;
-                grainRandomnessLabel.setText(String.format(
-                        "Grain randomness (%%): %.1f", grainRandomness * 100));
-                if (granulator != null)
-                    granulator.setGrainRandomness(grainRandomness);
-            }
+        grainRandomnesslSlider.addChangeListener(arg0 -> {
+            float grainRandomness = (float) grainRandomnesslSlider.getValue() / 1000.0f;
+            grainRandomnessLabel.setText(String.format(
+                    "Grain randomness (%%): %.1f", grainRandomness * 100));
+            if (granulator != null)
+                granulator.setGrainRandomness(grainRandomness);
         });
 
-        positionSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent arg0) {
-                float position = (float) positionSlider.getValue() / 1000.0f;
-                positionLabel.setText(String.format("Position (s): %.3f", position));
-                if (granulator != null)
-                    granulator.setPosition(position);
-            }
+        positionSlider.addChangeListener(arg0 -> {
+            float position = (float) positionSlider.getValue() / 1000.0f;
+            positionLabel.setText(String.format("Position (s): %.3f", position));
+            if (granulator != null)
+                granulator.setPosition(position);
         });
 
         timeStretchSlider.setValue(1000);
@@ -157,9 +140,7 @@ public class GranulatorExample extends JFrame {
     }
 
     public static void main(String[] args) {
-        GranulatorExample g = new GranulatorExample();
-        g.pack();
-        g.setVisible(true);
+        new GranulatorExample().start(args);
     }
 
     private void openFile(String audioFile) {
@@ -208,4 +189,23 @@ public class GranulatorExample extends JFrame {
 
     }
 
+    @NotNull
+    @Override
+    public String getDescription() {
+        return "Granulator Example";
+    }
+
+    @Override
+    public void start(@NotNull String... args) {
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                JFrame frame = this;
+                frame.pack();
+                frame.setSize(450, 250);
+                frame.setVisible(true);
+            });
+        } catch (InterruptedException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
 }

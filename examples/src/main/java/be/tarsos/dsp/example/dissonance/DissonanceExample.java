@@ -121,13 +121,13 @@ public class DissonanceExample extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("Spectral Peaks");
 
-        spectalInfo = new ArrayList<SpectralInfo>();
+        spectalInfo = new ArrayList<>();
 
         JPanel subPanel = new JPanel();
         subPanel.add(createButtonPanel(startDir));
 
-        frequencies = new ArrayList<Double>();
-        amplitudes = new ArrayList<Double>();
+        frequencies = new ArrayList<>();
+        amplitudes = new ArrayList<>();
 
         JPanel otherSubPanel = new JPanel(new GridLayout(2, 1));
         otherSubPanel.add(createSpectrumPanel());
@@ -137,15 +137,12 @@ public class DissonanceExample extends JFrame {
 
     }
 
-    public static void main(String[] args) throws InvocationTargetException, InterruptedException, UnsupportedAudioFileException, LineUnavailableException, IOException {
-        SwingUtilities.invokeAndWait(new Runnable() {
-            @Override
-            public void run() {
-                DissonanceExample frame = new DissonanceExample("/home/joren/Dropbox/UGent/LaTeX/Articles/2014.Sethares-Theory/etc/octave/flute-test/");
-                frame.pack();
-                frame.setSize(450, 650);
-                frame.setVisible(true);
-            }
+    public static void main(String[] args) throws InvocationTargetException, InterruptedException {
+        SwingUtilities.invokeAndWait(() -> {
+            DissonanceExample frame = new DissonanceExample("/home/joren/Dropbox/UGent/LaTeX/Articles/2014.Sethares-Theory/etc/octave/flute-test/");
+            frame.pack();
+            frame.setSize(450, 650);
+            frame.setVisible(true);
         });
     }
 
@@ -155,68 +152,56 @@ public class DissonanceExample extends JFrame {
 
         final JFileChooser fileChooser = new JFileChooser(new File(startDir));
         final JButton chooseFileButton = new JButton("Open...");
-        chooseFileButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                int returnVal = fileChooser.showOpenDialog(DissonanceExample.this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File file = fileChooser.getSelectedFile();
-                    System.out.println(file.toString());
-                    fileName = file.getAbsolutePath();
-                    startProcessing();
-                }
+        chooseFileButton.addActionListener(arg0 -> {
+            int returnVal = fileChooser.showOpenDialog(DissonanceExample.this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                System.out.println(file.toString());
+                fileName = file.getAbsolutePath();
+                startProcessing();
             }
         });
         buttonPanel.add(new JLabel("Choose a file:"));
         buttonPanel.add(chooseFileButton);
 
-        JComboBox<Integer> fftSizeComboBox = new JComboBox<Integer>(fftSizes);
-        fftSizeComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                @SuppressWarnings("unchecked")
-                Integer value = (Integer) ((JComboBox<Integer>) e.getSource()).getSelectedItem();
-                fftsize = value;
-                noiseFloorMedianFilterLenth = fftsize / 117;
-                System.out.println("FFT Changed to " + value + " median filter length to " + noiseFloorMedianFilterLenth);
-                startProcessing();
-            }
+        JComboBox<Integer> fftSizeComboBox = new JComboBox<>(fftSizes);
+        fftSizeComboBox.addActionListener(e -> {
+            @SuppressWarnings("unchecked")
+            Integer value = (Integer) ((JComboBox<Integer>) e.getSource()).getSelectedItem();
+            fftsize = value;
+            noiseFloorMedianFilterLenth = fftsize / 117;
+            System.out.println("FFT Changed to " + value + " median filter length to " + noiseFloorMedianFilterLenth);
+            startProcessing();
         });
         fftSizeComboBox.setSelectedIndex(3);
         buttonPanel.add(new JLabel("FFT-size:"));
         buttonPanel.add(fftSizeComboBox);
 
-        Integer value = new Integer(50);
-        Integer min = new Integer(32);
-        Integer max = new Integer(131072);
-        Integer step = new Integer(32);
+        Integer value = 50;
+        Integer min = 32;
+        Integer max = 131072;
+        Integer step = 32;
         SpinnerNumberModel model = new SpinnerNumberModel(value, min, max, step);
 
         JSpinner stepSizeSpinner = new JSpinner(model);
-        stepSizeSpinner.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                Integer value = (Integer) ((JSpinner) e.getSource()).getValue();
-                stepsize = value;
-                System.out.println("Step size Changed to " + value + ", overlap is " + (fftsize - stepsize));
-                startProcessing();
-            }
+        stepSizeSpinner.addChangeListener(e -> {
+            Integer value12 = (Integer) ((JSpinner) e.getSource()).getValue();
+            stepsize = value12;
+            System.out.println("Step size Changed to " + value12 + ", overlap is " + (fftsize - stepsize));
+            startProcessing();
         });
         stepSizeSpinner.setValue(512);
         buttonPanel.add(new JLabel("Step size:"));
         buttonPanel.add(stepSizeSpinner);
 
 
-        JComboBox<Integer> inputSampleRateCombobox = new JComboBox<Integer>(inputSampleRate);
-        inputSampleRateCombobox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                @SuppressWarnings("unchecked")
-                Integer value = (Integer) ((JComboBox<Integer>) e.getSource()).getSelectedItem();
-                sampleRate = value;
-                System.out.println("Sample rate Changed to " + value);
-                startProcessing();
-            }
+        JComboBox<Integer> inputSampleRateCombobox = new JComboBox<>(inputSampleRate);
+        inputSampleRateCombobox.addActionListener(e -> {
+            @SuppressWarnings("unchecked")
+            Integer value1 = (Integer) ((JComboBox<Integer>) e.getSource()).getSelectedItem();
+            sampleRate = value1;
+            System.out.println("Sample rate Changed to " + value1);
+            startProcessing();
         });
         inputSampleRateCombobox.setSelectedIndex(1);
         buttonPanel.add(new JLabel("Input sample rate"));
@@ -224,18 +209,15 @@ public class DissonanceExample extends JFrame {
 
         JSlider noiseFloorSlider = new JSlider(100, 250);
         final JLabel noiseFloorFactorLabel = new JLabel("Noise floor factor    :");
-        noiseFloorSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                int newValue = source.getValue();
-                double actualValue = newValue / 100.0;
-                noiseFloorFactorLabel.setText(String.format("Noise floor factor (%.2f):", actualValue));
-                System.out.println("New noise floor factor: " + actualValue);
-                noiseFloorFactor = (float) actualValue;
-                repaintSpectralInfo();
+        noiseFloorSlider.addChangeListener(e -> {
+            JSlider source = (JSlider) e.getSource();
+            int newValue = source.getValue();
+            double actualValue = newValue / 100.0;
+            noiseFloorFactorLabel.setText(String.format("Noise floor factor (%.2f):", actualValue));
+            System.out.println("New noise floor factor: " + actualValue);
+            noiseFloorFactor = (float) actualValue;
+            repaintSpectralInfo();
 
-            }
         });
         noiseFloorSlider.setValue(150);
         buttonPanel.add(noiseFloorFactorLabel);
@@ -243,15 +225,11 @@ public class DissonanceExample extends JFrame {
 
         final JLabel noiseFloorMedianLengthLabel = new JLabel("Noise floor median filter length (" + noiseFloorMedianFilterLenth + "):");
         noiseFloorMedianLengthSlider = new JSlider(3, fftsize / 2);
-        noiseFloorMedianLengthSlider.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int newValue = ((JSlider) e.getSource()).getValue();
-                noiseFloorMedianLengthLabel.setText("Noise floor median filter length (" + newValue + "):");
-                noiseFloorMedianFilterLenth = newValue;
-                repaintSpectralInfo();
-            }
+        noiseFloorMedianLengthSlider.addChangeListener(e -> {
+            int newValue = ((JSlider) e.getSource()).getValue();
+            noiseFloorMedianLengthLabel.setText("Noise floor median filter length (" + newValue + "):");
+            noiseFloorMedianFilterLenth = newValue;
+            repaintSpectralInfo();
         });
         buttonPanel.add(noiseFloorMedianLengthLabel);
         buttonPanel.add(noiseFloorMedianLengthSlider);
@@ -260,16 +238,13 @@ public class DissonanceExample extends JFrame {
 
         JSlider numberOfPeaksSlider = new JSlider(1, 20);
         final JLabel numberOfPeaksLabel = new JLabel("Number of peaks  :");
-        numberOfPeaksSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                int newValue = source.getValue();
-                numberOfPeaksLabel.setText("Number of peaks (" + newValue + "):");
-                System.out.println("New amount of peaks: " + newValue);
-                numberOfSpectralPeaks = newValue;
-                repaintSpectralInfo();
-            }
+        numberOfPeaksSlider.addChangeListener(e -> {
+            JSlider source = (JSlider) e.getSource();
+            int newValue = source.getValue();
+            numberOfPeaksLabel.setText("Number of peaks (" + newValue + "):");
+            System.out.println("New amount of peaks: " + newValue);
+            numberOfSpectralPeaks = newValue;
+            repaintSpectralInfo();
         });
         numberOfPeaksSlider.setValue(7);
         buttonPanel.add(numberOfPeaksLabel);
@@ -279,15 +254,11 @@ public class DissonanceExample extends JFrame {
         final JLabel frameLabel = new JLabel("Analysis frame (0):");
         frameSlider = new JSlider(0, 0);
         frameSlider.setEnabled(false);
-        frameSlider.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int newValue = ((JSlider) e.getSource()).getValue();
-                frameLabel.setText("Analysis frame (" + newValue + "):");
-                currentFrame = newValue;
-                repaintSpectralInfo();
-            }
+        frameSlider.addChangeListener(e -> {
+            int newValue = ((JSlider) e.getSource()).getValue();
+            frameLabel.setText("Analysis frame (" + newValue + "):");
+            currentFrame = newValue;
+            repaintSpectralInfo();
         });
         buttonPanel.add(frameLabel);
         buttonPanel.add(frameSlider);
@@ -441,9 +412,6 @@ public class DissonanceExample extends JFrame {
         if (fileName != null) {
             try {
                 extractPeakListList();
-            } catch (UnsupportedAudioFileException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             } catch (LineUnavailableException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -451,7 +419,7 @@ public class DissonanceExample extends JFrame {
         }
     }
 
-    private void extractPeakListList() throws UnsupportedAudioFileException, LineUnavailableException {
+    private void extractPeakListList() throws LineUnavailableException {
         if (dispatcher != null) {
             dispatcher.stop();
             dispatcher = null;
@@ -543,8 +511,8 @@ public class DissonanceExample extends JFrame {
 
         KernelDensityEstimate kde = new KernelDensityEstimate(kernel, 14400);
 
-        HashMap<Integer, Integer> peakCounter = new HashMap<Integer, Integer>();
-        HashMap<Integer, List<Integer>> peakFrames = new HashMap<Integer, List<Integer>>();
+        HashMap<Integer, Integer> peakCounter = new HashMap<>();
+        HashMap<Integer, List<Integer>> peakFrames = new HashMap<>();
 
         for (int i = 0; i < spectalInfo.size(); i++) {
 
@@ -562,7 +530,7 @@ public class DissonanceExample extends JFrame {
                     int key = (int) Math.round(pitchInCents / 50.0f);
                     if (!peakCounter.containsKey(key)) {
                         peakCounter.put(key, 0);
-                        peakFrames.put(key, new ArrayList<Integer>());
+                        peakFrames.put(key, new ArrayList<>());
                     }
                     peakCounter.put(key, peakCounter.get(key) + 1);
                     peakFrames.get(key).add(i);

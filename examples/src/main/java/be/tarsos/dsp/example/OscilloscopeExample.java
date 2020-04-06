@@ -24,6 +24,8 @@
 
 package be.tarsos.dsp.example;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -49,7 +51,7 @@ import be.tarsos.dsp.Oscilloscope;
 import be.tarsos.dsp.Oscilloscope.OscilloscopeEventHandler;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 
-public class OscilloscopeExample extends JFrame implements OscilloscopeEventHandler {
+public class OscilloscopeExample extends JFrame implements OscilloscopeEventHandler, TarsosDSPDemo {
 
     /**
      *
@@ -69,18 +71,15 @@ public class OscilloscopeExample extends JFrame implements OscilloscopeEventHand
         JPanel inputPanel = new InputPanel();
         //add(inputPanel);
         inputPanel.addPropertyChangeListener("mixer",
-                new PropertyChangeListener() {
-                    @Override
-                    public void propertyChange(PropertyChangeEvent arg0) {
-                        try {
-                            setNewMixer((Mixer) arg0.getNewValue());
-                        } catch (LineUnavailableException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        } catch (UnsupportedAudioFileException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+                arg0 -> {
+                    try {
+                        setNewMixer((Mixer) arg0.getNewValue());
+                    } catch (LineUnavailableException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (UnsupportedAudioFileException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
                 });
 
@@ -92,15 +91,7 @@ public class OscilloscopeExample extends JFrame implements OscilloscopeEventHand
 
     public static void main(String... strings) throws InterruptedException,
             InvocationTargetException {
-        SwingUtilities.invokeAndWait(new Runnable() {
-            @Override
-            public void run() {
-                JFrame frame = new OscilloscopeExample();
-                frame.pack();
-                frame.setSize(640, 480);
-                frame.setVisible(true);
-            }
-        });
+        new OscilloscopeExample().start(strings);
     }
 
     private void setNewMixer(Mixer mixer) throws LineUnavailableException,
@@ -144,6 +135,26 @@ public class OscilloscopeExample extends JFrame implements OscilloscopeEventHand
     public void handleEvent(float[] data, AudioEvent event) {
         panel.paint(data, event);
         panel.repaint();
+    }
+
+    @NotNull
+    @Override
+    public String getDescription() {
+        return "Oscilloscope Example";
+    }
+
+    @Override
+    public void start(@NotNull String... args) {
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                JFrame frame = this;
+                frame.pack();
+                frame.setSize(640, 480);
+                frame.setVisible(true);
+            });
+        } catch (InterruptedException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
     private static class GaphPanel extends JPanel {

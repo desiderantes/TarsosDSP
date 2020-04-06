@@ -23,6 +23,8 @@
 
 package be.tarsos.dsp.example;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.KeyEventPostProcessor;
@@ -106,7 +108,7 @@ public class SampleExtractor extends JFrame implements TarsosDSPDemo {
     public SampleExtractor() {
         this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setTitle("Sample Exctractor: Extract & Modify Samples");
+        this.setTitle("Sample Extractor: Extract & Modify Samples");
 
 
         fileChooser = new JFileChooser();
@@ -307,11 +309,11 @@ public class SampleExtractor extends JFrame implements TarsosDSPDemo {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Sample Extractor: Extract & Modify Samples";
     }
 
     @Override
-    public void start(String... args) {
+    public void start(@NotNull String... args) {
         try {
             SwingUtilities.invokeAndWait(() -> {
                 try {
