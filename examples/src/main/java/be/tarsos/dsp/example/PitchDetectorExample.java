@@ -157,10 +157,10 @@ public class PitchDetectorExample extends JFrame implements PitchDetectionHandle
 
     @Override
     public void handlePitch(PitchDetectionResult pitchDetectionResult, AudioEvent audioEvent) {
-        if (pitchDetectionResult.getPitch() != -1) {
+        if (pitchDetectionResult.pitch != -1) {
             double timeStamp = audioEvent.getTimeStamp();
-            float pitch = pitchDetectionResult.getPitch();
-            float probability = pitchDetectionResult.getProbability();
+            float pitch = pitchDetectionResult.pitch;
+            float probability = pitchDetectionResult.probability;
             double rms = audioEvent.getRMS() * 100;
             String message = String.format("Pitch detected at %.2fs: %.2fHz ( %.2f probability, RMS: %.5f )\n", timeStamp, pitch, probability, rms);
             textArea.append(message);

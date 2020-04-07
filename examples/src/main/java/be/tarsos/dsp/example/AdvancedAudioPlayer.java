@@ -68,7 +68,7 @@ public class AdvancedAudioPlayer extends JFrame implements TarsosDSPDemo {
 
         @Override
         public boolean process(AudioEvent audioEvent) {
-            float[] audioFloatBuffer = audioEvent.getFloatBuffer();
+            float[] audioFloatBuffer = audioEvent.floatBuffer;
             int bufferSize = audioFloatBuffer.length;
             float[] transformbuffer = new float[bufferSize * 2];
             if (prevSize != bufferSize) {

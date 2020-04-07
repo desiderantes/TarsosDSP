@@ -106,7 +106,7 @@ public class TimeStrechingBasedOnPitchShifting extends JFrame implements TarsosD
 
             @Override
             public boolean process(AudioEvent audioEvent) {
-                buffer = audioEvent.getFloatBuffer();
+                buffer = audioEvent.floatBuffer;
                 return true;
             }
         });
@@ -124,21 +124,21 @@ public class TimeStrechingBasedOnPitchShifting extends JFrame implements TarsosD
             public boolean process(AudioEvent audioEvent) {
 
                 float factor = (float) (currentFactor);
-                float[] src = audioEvent.getFloatBuffer();
+                float[] src = audioEvent.floatBuffer;
                 float[] out = new float[(int) ((size - overlap) * factor)];
                 r.process(factor, src, overlap, size - overlap, false, out, 0, out.length);
                 //The size of the output buffer changes (according to factor).
                 d.setStepSizeAndOverlap(out.length, 0);
 
-                audioEvent.setFloatBuffer(out);
-                audioEvent.setOverlap(0);
+                audioEvent.floatBuffer = out;
+                audioEvent.overlap = 0;
 
                 return true;
             }
         });
         //d.addAudioProcessor(rateTransposer);
         try {
-            d.addAudioProcessor(new AudioPlayer(d.getFormat()));
+            d.addAudioProcessor(new AudioPlayer(d.format));
         } catch (LineUnavailableException e) {
             e.printStackTrace();
         }
@@ -152,8 +152,8 @@ public class TimeStrechingBasedOnPitchShifting extends JFrame implements TarsosD
             public boolean process(AudioEvent audioEvent) {
                 d.setStepSizeAndOverlap(size, overlap);
                 d.setAudioFloatBuffer(buffer);
-                audioEvent.setFloatBuffer(buffer);
-                audioEvent.setOverlap(overlap);
+                audioEvent.floatBuffer = buffer;
+                audioEvent.overlap = overlap;
                 return true;
             }
         });

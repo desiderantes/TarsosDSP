@@ -195,7 +195,7 @@ class FeatureExtractor() : TarsosDSPDemo {
                 override fun processingFinished() {}
                 override fun process(audioEvent: AudioEvent): Boolean {
                     println(
-                        audioEvent.timeStamp.toString() + "," + silenceDetecor.currentSPL()
+                        audioEvent.timeStamp.toString() + "," + silenceDetecor.currentSPL
                     )
                     return true
                 }

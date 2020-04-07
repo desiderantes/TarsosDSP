@@ -135,7 +135,7 @@ public class SampleExtractor extends JFrame implements TarsosDSPDemo {
                         dispatcher = AudioDispatcherFactory.fromFile(file, 1024, 0);
                         dispatcher.skip((Double) startSelectionSpinner.getValue());
                         dispatcher.addAudioProcessor(new StopAudioProcessor((Double) endSelectionSpinner.getValue()));
-                        dispatcher.addAudioProcessor(new AudioPlayer(JVMAudioInputStream.toAudioFormat(dispatcher.getFormat())));
+                        dispatcher.addAudioProcessor(new AudioPlayer(JVMAudioInputStream.toAudioFormat(dispatcher.format)));
                     } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e1) {
                         //ignored
                     }

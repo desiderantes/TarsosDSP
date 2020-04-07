@@ -146,7 +146,7 @@ public class UtterAsterisk extends JFrame implements PitchDetectionHandler, Tars
     @Override
     public void handlePitch(PitchDetectionResult pitchDetectionResult, AudioEvent audioEvent) {
         double timeStamp = audioEvent.getTimeStamp();
-        float pitch = pitchDetectionResult.getPitch();
+        float pitch = pitchDetectionResult.pitch;
         panel.setMarker(timeStamp, pitch);
     }
 

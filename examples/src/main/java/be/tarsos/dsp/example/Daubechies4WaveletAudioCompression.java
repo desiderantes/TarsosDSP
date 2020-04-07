@@ -69,12 +69,12 @@ public class Daubechies4WaveletAudioCompression extends JFrame implements Tarsos
             public void run() {
                 try {
                     AudioDispatcher adp = AudioDispatcherFactory.fromPipe(source, 44100, 32, 0);
-                    AudioFormat format = JVMAudioInputStream.toAudioFormat(adp.getFormat());
+                    AudioFormat format = JVMAudioInputStream.toAudioFormat(adp.format);
                     coder = new Daubechies4WaveletCoder(16);
                     Daubechies4WaveletDecoder decoder = new Daubechies4WaveletDecoder();
                     gain = new GainProcessor(1.0);
                     bithDeptProcessor = new BitDepthProcessor();
-                    bithDeptProcessor.setBitDepth(adp.getFormat().getSampleSizeInBits());
+                    bithDeptProcessor.bitDepth = adp.format.getSampleSizeInBits();
 
                     adp.addAudioProcessor(coder);
                     adp.addAudioProcessor(decoder);
@@ -170,7 +170,7 @@ public class Daubechies4WaveletAudioCompression extends JFrame implements Tarsos
                 int bitDepth = bitDepthcompressionSlider.getValue();
                 label.setText(String.format("Bit depth (bits): %3d", bitDepth));
                 if (bithDeptProcessor != null)
-                    bithDeptProcessor.setBitDepth(bitDepth);
+                    bithDeptProcessor.bitDepth = bitDepth;
             }
         });
         JPanel compressionPanel = new JPanel(new BorderLayout());

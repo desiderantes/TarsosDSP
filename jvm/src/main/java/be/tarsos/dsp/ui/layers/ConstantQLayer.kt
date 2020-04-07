@@ -130,7 +130,7 @@ class ConstantQLayer(
                 )
                 binWith = increment / sampleRate
                 binHeight = 1200 / binsPerOctave.toFloat()
-                val startingPointsInHertz = constantQ.freqencies
+                val startingPointsInHertz = constantQ.frequencies
                 binStartingPointsInCents = FloatArray(startingPointsInHertz.size){ i->
                     PitchConverter.hertzToAbsoluteCent(startingPointsInHertz[i].toDouble()).toFloat()
                 }

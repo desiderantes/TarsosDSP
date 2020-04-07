@@ -20,88 +20,73 @@
  *  for credits and info, see README.
  *
  */
+package be.tarsos.dsp.wavelet
 
-package be.tarsos.dsp.wavelet;
+import be.tarsos.dsp.AudioEvent
+import be.tarsos.dsp.AudioProcessor
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.AudioProcessor;
-
-public class HaarWaveletFileWriter implements AudioProcessor {
-
-
-    private final int compression;
-    private FileOutputStream rawOutputStream;
-
-    public HaarWaveletFileWriter(String fileName, int compression) {
-        this.compression = compression;
-        try {
-            this.rawOutputStream = new FileOutputStream(fileName);
-        } catch (FileNotFoundException e) {
-            this.rawOutputStream = null;
-        }
-    }
-
-    @Override
-    public boolean process(AudioEvent audioEvent) {
-        float[] audioBuffer = audioEvent.getFloatBuffer();
-
-        int placesWithZero = 0;
-        int zeroCounter = 0;
-        for (int i = 0; i < audioBuffer.length; i++) {
-            if (audioBuffer[i] == 0 && zeroCounter < compression) {
-                zeroCounter++;
-                placesWithZero = placesWithZero | (1 << i);
+class HaarWaveletFileWriter(fileName: String, private val compression: Int) : AudioProcessor {
+    private var rawOutputStream: FileOutputStream
+    override fun process(audioEvent: AudioEvent): Boolean {
+        val audioBuffer = audioEvent.floatBuffer
+        var placesWithZero = 0
+        var zeroCounter = 0
+        for (i in audioBuffer.indices) {
+            if (audioBuffer[i] == 0F && zeroCounter < compression) {
+                zeroCounter++
+                placesWithZero = placesWithZero or (1 shl i)
             }
         }
-
-        assert zeroCounter == compression;
+        assert(zeroCounter == compression)
 
 
         //16 bits little endian
-        byte[] byteBuffer = new byte[(audioBuffer.length - compression) * 2];
-        zeroCounter = 0;
-        int bufferIndex = 0;
-        for (int i = 0; i < byteBuffer.length; i++) {
-            float value = audioBuffer[bufferIndex++];
-            if (value == 0 && zeroCounter < compression) {
-                zeroCounter++;
-                i--;
+        val byteBuffer = ByteArray((audioBuffer.size - compression) * 2)
+        zeroCounter = 0
+        var bufferIndex = 0
+        var i = 0
+        while (i < byteBuffer.size) {
+            val value = audioBuffer[bufferIndex++]
+            if (value == 0f && zeroCounter < compression) {
+                zeroCounter++
+                i--
             } else {
-                int x = (int) (value * 32767.0);
-                byteBuffer[i] = (byte) x;
-                i++;
-                byteBuffer[i] = (byte) (x >>> 8);
+                val x = (value * 32767.0).toInt()
+                byteBuffer[i] = x.toByte()
+                i++
+                byteBuffer[i] = (x ushr 8).toByte()
             }
+            i++
         }
-
         try {
-            rawOutputStream.write(byteBuffer);
-            rawOutputStream.write((byte) placesWithZero);
-            rawOutputStream.write((byte) (placesWithZero >>> 8));
-            rawOutputStream.write((byte) (placesWithZero >>> 16));
-            rawOutputStream.write((byte) (placesWithZero >>> 24));
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            rawOutputStream.write(byteBuffer)
+            rawOutputStream.write(placesWithZero)
+            rawOutputStream.write((placesWithZero ushr 8))
+            rawOutputStream.write((placesWithZero ushr 16))
+            rawOutputStream.write((placesWithZero ushr 24) )
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
-
-
-        return true;
+        return true
     }
 
-    @Override
-    public void processingFinished() {
+    override fun processingFinished() {
         try {
-            rawOutputStream.close();
-        } catch (IOException e) {
+            rawOutputStream.close()
+        } catch (e: IOException) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            e.printStackTrace()
         }
-
     }
 
+    init {
+        rawOutputStream = try {
+            FileOutputStream(fileName)
+        } catch (e: FileNotFoundException) {
+            throw e
+        }
+    }
 }

@@ -29,6 +29,7 @@ import be.tarsos.dsp.AudioDispatcher
 import be.tarsos.dsp.io.PipedAudioStream
 import be.tarsos.dsp.io.TarsosDSPAudioFormat
 import be.tarsos.dsp.io.TarsosDSPAudioInputStream
+import be.tarsos.dsp.io.UniversalAudioInputStream
 import java.io.IOException
 import java.io.InputStream
 
@@ -68,7 +69,7 @@ object AudioDispatcherFactory {
             )
             val format = TarsosDSPAudioFormat(sampleRate.toFloat(), 16, 1, true, false)
             val audioStream: TarsosDSPAudioInputStream =
-                HardwareAndroidAudioInputStream(audioInputStream, format)
+                AndroidAudioInputStream(audioInputStream, format)
             //start recording ! Opens the stream.
             audioInputStream.startRecording()
             AudioDispatcher(audioStream, audioBufferSize, bufferOverlap)
@@ -91,7 +92,7 @@ object AudioDispatcherFactory {
      * @return A new audioprocessor.
      */
     fun fromPipe(
-        source: String?,
+        source: String,
         targetSampleRate: Int,
         audioBufferSize: Int,
         bufferOverlap: Int
@@ -120,7 +121,7 @@ object AudioDispatcherFactory {
         audioFormat: TarsosDSPAudioFormat
     ): AudioDispatcher {
         val audioStream: TarsosDSPAudioInputStream =
-            WrapperAndroidAudioInputStream(inputStream, audioFormat)
+            UniversalAudioInputStream(inputStream, audioFormat)
         return AudioDispatcher(audioStream, audioBufferSize, bufferOverlap)
     }
 }

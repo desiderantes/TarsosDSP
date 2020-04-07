@@ -154,13 +154,13 @@ public class GranulatorExample extends JFrame implements TarsosDSPDemo {
 
             @Override
             public boolean process(AudioEvent audioEvent) {
-                orig = audioEvent.getFloatBuffer();
+                orig = audioEvent.floatBuffer;
                 return true;
             }
         });
         d.addAudioProcessor(granulator);
         try {
-            d.addAudioProcessor(new AudioPlayer(d.getFormat()));
+            d.addAudioProcessor(new AudioPlayer(d.format));
         } catch (LineUnavailableException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -174,7 +174,7 @@ public class GranulatorExample extends JFrame implements TarsosDSPDemo {
 
             @Override
             public boolean process(AudioEvent audioEvent) {
-                audioEvent.setFloatBuffer(orig);
+                audioEvent.floatBuffer = orig;
                 return true;
             }
         });

@@ -82,9 +82,9 @@ public class PitchShiftingExample extends JFrame implements TarsosDSPDemo {
             factorLabel.setText("Factor " + Math.round(currentFactor * 100) + "%");
             if (PitchShiftingExample.this.dispatcher != null) {
                 if (originalTempoCheckBox.getModel().isSelected()) {
-                    wsola.setParameters(WaveformSimilarityBasedOverlapAdd.Parameters.musicDefaults(currentFactor, sampleRate));
+                    wsola.applyNewParameters(WaveformSimilarityBasedOverlapAdd.Parameters.musicDefaults(currentFactor, sampleRate));
                 } else {
-                    wsola.setParameters(WaveformSimilarityBasedOverlapAdd.Parameters.musicDefaults(1, sampleRate));
+                    wsola.applyNewParameters(WaveformSimilarityBasedOverlapAdd.Parameters.musicDefaults(1, sampleRate));
                 }
                 rateTransposer.setFactor(currentFactor);
             }
@@ -119,9 +119,8 @@ public class PitchShiftingExample extends JFrame implements TarsosDSPDemo {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 startFile(file, null);
-            } else {
-                //canceled
             }
+
         });
         fileChooserPanel.add(chooseFileButton);
         fileChooser.setLayout(new BoxLayout(fileChooser, BoxLayout.PAGE_AXIS));

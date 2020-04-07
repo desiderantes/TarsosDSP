@@ -212,7 +212,7 @@ public class Catify {
                 public boolean process(AudioEvent audioEvent) {
                     int startIndex = (int) (s.getStart() * sampleRate) + dispatcherIndex;
 
-                    float[] sampleBuffer = audioEvent.getFloatBuffer();
+                    float[] sampleBuffer = audioEvent.floatBuffer;
                     for (int i = startIndex; i < startIndex + sampleBuffer.length; i++) {
                         buffer[i] += sampleBuffer[i - startIndex];
                     }

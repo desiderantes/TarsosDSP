@@ -399,15 +399,13 @@ public strictfp class FloatFFT {
                     for (int i = 0; i < nthreads; i++) {
                         final int firstIdx = i * k;
                         final int lastIdx = (i == (nthreads - 1)) ? n / 2 : firstIdx + k;
-                        futures[i] = ConcurrencyUtils.submit(new Runnable() {
-                            public void run() {
-                                int idx1, idx2;
-                                for (int k = firstIdx; k < lastIdx; k++) {
-                                    idx1 = 2 * k;
-                                    idx2 = offa + ((twon - idx1) % twon);
-                                    a[idx2] = a[offa + idx1];
-                                    a[idx2 + 1] = -a[offa + idx1 + 1];
-                                }
+                        futures[i] = ConcurrencyUtils.submit(() -> {
+                            int idx1, idx2;
+                            for (int k1 = firstIdx; k1 < lastIdx; k1++) {
+                                idx1 = 2 * k1;
+                                idx2 = offa + ((twon - idx1) % twon);
+                                a[idx2] = a[offa + idx1];
+                                a[idx2 + 1] = -a[offa + idx1 + 1];
                             }
                         });
                     }
@@ -589,15 +587,13 @@ public strictfp class FloatFFT {
                     for (int i = 0; i < nthreads; i++) {
                         final int firstIdx = i * k;
                         final int lastIdx = (i == (nthreads - 1)) ? n / 2 : firstIdx + k;
-                        futures[i] = ConcurrencyUtils.submit(new Runnable() {
-                            public void run() {
-                                int idx1, idx2;
-                                for (int k = firstIdx; k < lastIdx; k++) {
-                                    idx1 = 2 * k;
-                                    idx2 = offa + ((twon - idx1) % twon);
-                                    a[idx2] = a[offa + idx1];
-                                    a[idx2 + 1] = -a[offa + idx1 + 1];
-                                }
+                        futures[i] = ConcurrencyUtils.submit(() -> {
+                            int idx1, idx2;
+                            for (int k1 = firstIdx; k1 < lastIdx; k1++) {
+                                idx1 = 2 * k1;
+                                idx2 = offa + ((twon - idx1) % twon);
+                                a[idx2] = a[offa + idx1];
+                                a[idx2 + 1] = -a[offa + idx1 + 1];
                             }
                         });
                     }
@@ -1097,26 +1093,24 @@ public strictfp class FloatFFT {
             for (int i = 0; i < nthreads; i++) {
                 final int firstIdx = i * k;
                 final int lastIdx = (i == (nthreads - 1)) ? n : firstIdx + k;
-                futures[i] = ConcurrencyUtils.submit(new Runnable() {
-                    public void run() {
-                        if (isign > 0) {
-                            for (int i = firstIdx; i < lastIdx; i++) {
-                                int idx1 = 2 * i;
-                                int idx2 = idx1 + 1;
-                                int idx3 = offa + idx1;
-                                int idx4 = offa + idx2;
-                                ak[idx1] = a[idx3] * bk1[idx1] - a[idx4] * bk1[idx2];
-                                ak[idx2] = a[idx3] * bk1[idx2] + a[idx4] * bk1[idx1];
-                            }
-                        } else {
-                            for (int i = firstIdx; i < lastIdx; i++) {
-                                int idx1 = 2 * i;
-                                int idx2 = idx1 + 1;
-                                int idx3 = offa + idx1;
-                                int idx4 = offa + idx2;
-                                ak[idx1] = a[idx3] * bk1[idx1] + a[idx4] * bk1[idx2];
-                                ak[idx2] = -a[idx3] * bk1[idx2] + a[idx4] * bk1[idx1];
-                            }
+                futures[i] = ConcurrencyUtils.submit(() -> {
+                    if (isign > 0) {
+                        for (int i13 = firstIdx; i13 < lastIdx; i13++) {
+                            int idx1 = 2 * i13;
+                            int idx2 = idx1 + 1;
+                            int idx3 = offa + idx1;
+                            int idx4 = offa + idx2;
+                            ak[idx1] = a[idx3] * bk1[idx1] - a[idx4] * bk1[idx2];
+                            ak[idx2] = a[idx3] * bk1[idx2] + a[idx4] * bk1[idx1];
+                        }
+                    } else {
+                        for (int i13 = firstIdx; i13 < lastIdx; i13++) {
+                            int idx1 = 2 * i13;
+                            int idx2 = idx1 + 1;
+                            int idx3 = offa + idx1;
+                            int idx4 = offa + idx2;
+                            ak[idx1] = a[idx3] * bk1[idx1] + a[idx4] * bk1[idx2];
+                            ak[idx2] = -a[idx3] * bk1[idx2] + a[idx4] * bk1[idx1];
                         }
                     }
                 });
@@ -1129,24 +1123,22 @@ public strictfp class FloatFFT {
             for (int i = 0; i < nthreads; i++) {
                 final int firstIdx = i * k;
                 final int lastIdx = (i == (nthreads - 1)) ? nBluestein : firstIdx + k;
-                futures[i] = ConcurrencyUtils.submit(new Runnable() {
-                    public void run() {
-                        if (isign > 0) {
-                            for (int i = firstIdx; i < lastIdx; i++) {
-                                int idx1 = 2 * i;
-                                int idx2 = idx1 + 1;
-                                float im = -ak[idx1] * bk2[idx2] + ak[idx2] * bk2[idx1];
-                                ak[idx1] = ak[idx1] * bk2[idx1] + ak[idx2] * bk2[idx2];
-                                ak[idx2] = im;
-                            }
-                        } else {
-                            for (int i = firstIdx; i < lastIdx; i++) {
-                                int idx1 = 2 * i;
-                                int idx2 = idx1 + 1;
-                                float im = ak[idx1] * bk2[idx2] + ak[idx2] * bk2[idx1];
-                                ak[idx1] = ak[idx1] * bk2[idx1] - ak[idx2] * bk2[idx2];
-                                ak[idx2] = im;
-                            }
+                futures[i] = ConcurrencyUtils.submit(() -> {
+                    if (isign > 0) {
+                        for (int i12 = firstIdx; i12 < lastIdx; i12++) {
+                            int idx1 = 2 * i12;
+                            int idx2 = idx1 + 1;
+                            float im = -ak[idx1] * bk2[idx2] + ak[idx2] * bk2[idx1];
+                            ak[idx1] = ak[idx1] * bk2[idx1] + ak[idx2] * bk2[idx2];
+                            ak[idx2] = im;
+                        }
+                    } else {
+                        for (int i12 = firstIdx; i12 < lastIdx; i12++) {
+                            int idx1 = 2 * i12;
+                            int idx2 = idx1 + 1;
+                            float im = ak[idx1] * bk2[idx2] + ak[idx2] * bk2[idx1];
+                            ak[idx1] = ak[idx1] * bk2[idx1] - ak[idx2] * bk2[idx2];
+                            ak[idx2] = im;
                         }
                     }
                 });
@@ -1159,26 +1151,24 @@ public strictfp class FloatFFT {
             for (int i = 0; i < nthreads; i++) {
                 final int firstIdx = i * k;
                 final int lastIdx = (i == (nthreads - 1)) ? n : firstIdx + k;
-                futures[i] = ConcurrencyUtils.submit(new Runnable() {
-                    public void run() {
-                        if (isign > 0) {
-                            for (int i = firstIdx; i < lastIdx; i++) {
-                                int idx1 = 2 * i;
-                                int idx2 = idx1 + 1;
-                                int idx3 = offa + idx1;
-                                int idx4 = offa + idx2;
-                                a[idx3] = bk1[idx1] * ak[idx1] - bk1[idx2] * ak[idx2];
-                                a[idx4] = bk1[idx2] * ak[idx1] + bk1[idx1] * ak[idx2];
-                            }
-                        } else {
-                            for (int i = firstIdx; i < lastIdx; i++) {
-                                int idx1 = 2 * i;
-                                int idx2 = idx1 + 1;
-                                int idx3 = offa + idx1;
-                                int idx4 = offa + idx2;
-                                a[idx3] = bk1[idx1] * ak[idx1] + bk1[idx2] * ak[idx2];
-                                a[idx4] = -bk1[idx2] * ak[idx1] + bk1[idx1] * ak[idx2];
-                            }
+                futures[i] = ConcurrencyUtils.submit(() -> {
+                    if (isign > 0) {
+                        for (int i1 = firstIdx; i1 < lastIdx; i1++) {
+                            int idx1 = 2 * i1;
+                            int idx2 = idx1 + 1;
+                            int idx3 = offa + idx1;
+                            int idx4 = offa + idx2;
+                            a[idx3] = bk1[idx1] * ak[idx1] - bk1[idx2] * ak[idx2];
+                            a[idx4] = bk1[idx2] * ak[idx1] + bk1[idx1] * ak[idx2];
+                        }
+                    } else {
+                        for (int i1 = firstIdx; i1 < lastIdx; i1++) {
+                            int idx1 = 2 * i1;
+                            int idx2 = idx1 + 1;
+                            int idx3 = offa + idx1;
+                            int idx4 = offa + idx2;
+                            a[idx3] = bk1[idx1] * ak[idx1] + bk1[idx2] * ak[idx2];
+                            a[idx4] = -bk1[idx2] * ak[idx1] + bk1[idx1] * ak[idx2];
                         }
                     }
                 });
@@ -1261,24 +1251,22 @@ public strictfp class FloatFFT {
             for (int i = 0; i < nthreads; i++) {
                 final int firstIdx = i * k;
                 final int lastIdx = (i == (nthreads - 1)) ? n : firstIdx + k;
-                futures[i] = ConcurrencyUtils.submit(new Runnable() {
-                    public void run() {
-                        if (isign > 0) {
-                            for (int i = firstIdx; i < lastIdx; i++) {
-                                int idx1 = 2 * i;
-                                int idx2 = idx1 + 1;
-                                int idx3 = offa + i;
-                                ak[idx1] = a[idx3] * bk1[idx1];
-                                ak[idx2] = a[idx3] * bk1[idx2];
-                            }
-                        } else {
-                            for (int i = firstIdx; i < lastIdx; i++) {
-                                int idx1 = 2 * i;
-                                int idx2 = idx1 + 1;
-                                int idx3 = offa + i;
-                                ak[idx1] = a[idx3] * bk1[idx1];
-                                ak[idx2] = -a[idx3] * bk1[idx2];
-                            }
+                futures[i] = ConcurrencyUtils.submit(() -> {
+                    if (isign > 0) {
+                        for (int i13 = firstIdx; i13 < lastIdx; i13++) {
+                            int idx1 = 2 * i13;
+                            int idx2 = idx1 + 1;
+                            int idx3 = offa + i13;
+                            ak[idx1] = a[idx3] * bk1[idx1];
+                            ak[idx2] = a[idx3] * bk1[idx2];
+                        }
+                    } else {
+                        for (int i13 = firstIdx; i13 < lastIdx; i13++) {
+                            int idx1 = 2 * i13;
+                            int idx2 = idx1 + 1;
+                            int idx3 = offa + i13;
+                            ak[idx1] = a[idx3] * bk1[idx1];
+                            ak[idx2] = -a[idx3] * bk1[idx2];
                         }
                     }
                 });
@@ -1291,24 +1279,22 @@ public strictfp class FloatFFT {
             for (int i = 0; i < nthreads; i++) {
                 final int firstIdx = i * k;
                 final int lastIdx = (i == (nthreads - 1)) ? nBluestein : firstIdx + k;
-                futures[i] = ConcurrencyUtils.submit(new Runnable() {
-                    public void run() {
-                        if (isign > 0) {
-                            for (int i = firstIdx; i < lastIdx; i++) {
-                                int idx1 = 2 * i;
-                                int idx2 = idx1 + 1;
-                                float im = -ak[idx1] * bk2[idx2] + ak[idx2] * bk2[idx1];
-                                ak[idx1] = ak[idx1] * bk2[idx1] + ak[idx2] * bk2[idx2];
-                                ak[idx2] = im;
-                            }
-                        } else {
-                            for (int i = firstIdx; i < lastIdx; i++) {
-                                int idx1 = 2 * i;
-                                int idx2 = idx1 + 1;
-                                float im = ak[idx1] * bk2[idx2] + ak[idx2] * bk2[idx1];
-                                ak[idx1] = ak[idx1] * bk2[idx1] - ak[idx2] * bk2[idx2];
-                                ak[idx2] = im;
-                            }
+                futures[i] = ConcurrencyUtils.submit(() -> {
+                    if (isign > 0) {
+                        for (int i12 = firstIdx; i12 < lastIdx; i12++) {
+                            int idx1 = 2 * i12;
+                            int idx2 = idx1 + 1;
+                            float im = -ak[idx1] * bk2[idx2] + ak[idx2] * bk2[idx1];
+                            ak[idx1] = ak[idx1] * bk2[idx1] + ak[idx2] * bk2[idx2];
+                            ak[idx2] = im;
+                        }
+                    } else {
+                        for (int i12 = firstIdx; i12 < lastIdx; i12++) {
+                            int idx1 = 2 * i12;
+                            int idx2 = idx1 + 1;
+                            float im = ak[idx1] * bk2[idx2] + ak[idx2] * bk2[idx1];
+                            ak[idx1] = ak[idx1] * bk2[idx1] - ak[idx2] * bk2[idx2];
+                            ak[idx2] = im;
                         }
                     }
                 });
@@ -1321,22 +1307,20 @@ public strictfp class FloatFFT {
             for (int i = 0; i < nthreads; i++) {
                 final int firstIdx = i * k;
                 final int lastIdx = (i == (nthreads - 1)) ? n : firstIdx + k;
-                futures[i] = ConcurrencyUtils.submit(new Runnable() {
-                    public void run() {
-                        if (isign > 0) {
-                            for (int i = firstIdx; i < lastIdx; i++) {
-                                int idx1 = 2 * i;
-                                int idx2 = idx1 + 1;
-                                a[offa + idx1] = bk1[idx1] * ak[idx1] - bk1[idx2] * ak[idx2];
-                                a[offa + idx2] = bk1[idx2] * ak[idx1] + bk1[idx1] * ak[idx2];
-                            }
-                        } else {
-                            for (int i = firstIdx; i < lastIdx; i++) {
-                                int idx1 = 2 * i;
-                                int idx2 = idx1 + 1;
-                                a[offa + idx1] = bk1[idx1] * ak[idx1] + bk1[idx2] * ak[idx2];
-                                a[offa + idx2] = -bk1[idx2] * ak[idx1] + bk1[idx1] * ak[idx2];
-                            }
+                futures[i] = ConcurrencyUtils.submit(() -> {
+                    if (isign > 0) {
+                        for (int i1 = firstIdx; i1 < lastIdx; i1++) {
+                            int idx1 = 2 * i1;
+                            int idx2 = idx1 + 1;
+                            a[offa + idx1] = bk1[idx1] * ak[idx1] - bk1[idx2] * ak[idx2];
+                            a[offa + idx2] = bk1[idx2] * ak[idx1] + bk1[idx1] * ak[idx2];
+                        }
+                    } else {
+                        for (int i1 = firstIdx; i1 < lastIdx; i1++) {
+                            int idx1 = 2 * i1;
+                            int idx2 = idx1 + 1;
+                            a[offa + idx1] = bk1[idx1] * ak[idx1] + bk1[idx2] * ak[idx2];
+                            a[offa + idx2] = -bk1[idx2] * ak[idx1] + bk1[idx1] * ak[idx2];
                         }
                     }
                 });
@@ -1414,15 +1398,13 @@ public strictfp class FloatFFT {
             for (int i = 0; i < nthreads; i++) {
                 final int firstIdx = i * k;
                 final int lastIdx = (i == (nthreads - 1)) ? n : firstIdx + k;
-                futures[i] = ConcurrencyUtils.submit(new Runnable() {
-                    public void run() {
-                        for (int i = firstIdx; i < lastIdx; i++) {
-                            int idx1 = 2 * i;
-                            int idx2 = idx1 + 1;
-                            int idx3 = offa + i;
-                            ak[idx1] = a[idx3] * bk1[idx1];
-                            ak[idx2] = -a[idx3] * bk1[idx2];
-                        }
+                futures[i] = ConcurrencyUtils.submit(() -> {
+                    for (int i12 = firstIdx; i12 < lastIdx; i12++) {
+                        int idx1 = 2 * i12;
+                        int idx2 = idx1 + 1;
+                        int idx3 = offa + i12;
+                        ak[idx1] = a[idx3] * bk1[idx1];
+                        ak[idx2] = -a[idx3] * bk1[idx2];
                     }
                 });
             }
@@ -1434,15 +1416,13 @@ public strictfp class FloatFFT {
             for (int i = 0; i < nthreads; i++) {
                 final int firstIdx = i * k;
                 final int lastIdx = (i == (nthreads - 1)) ? nBluestein : firstIdx + k;
-                futures[i] = ConcurrencyUtils.submit(new Runnable() {
-                    public void run() {
-                        for (int i = firstIdx; i < lastIdx; i++) {
-                            int idx1 = 2 * i;
-                            int idx2 = idx1 + 1;
-                            float im = ak[idx1] * bk2[idx2] + ak[idx2] * bk2[idx1];
-                            ak[idx1] = ak[idx1] * bk2[idx1] - ak[idx2] * bk2[idx2];
-                            ak[idx2] = im;
-                        }
+                futures[i] = ConcurrencyUtils.submit(() -> {
+                    for (int i1 = firstIdx; i1 < lastIdx; i1++) {
+                        int idx1 = 2 * i1;
+                        int idx2 = idx1 + 1;
+                        float im = ak[idx1] * bk2[idx2] + ak[idx2] * bk2[idx1];
+                        ak[idx1] = ak[idx1] * bk2[idx1] - ak[idx2] * bk2[idx2];
+                        ak[idx2] = im;
                     }
                 });
             }
@@ -1563,15 +1543,13 @@ public strictfp class FloatFFT {
             for (int i = 0; i < nthreads; i++) {
                 final int firstIdx = i * k;
                 final int lastIdx = (i == (nthreads - 1)) ? nBluestein : firstIdx + k;
-                futures[i] = ConcurrencyUtils.submit(new Runnable() {
-                    public void run() {
-                        for (int i = firstIdx; i < lastIdx; i++) {
-                            int idx1 = 2 * i;
-                            int idx2 = idx1 + 1;
-                            float im = -ak[idx1] * bk2[idx2] + ak[idx2] * bk2[idx1];
-                            ak[idx1] = ak[idx1] * bk2[idx1] + ak[idx2] * bk2[idx2];
-                            ak[idx2] = im;
-                        }
+                futures[i] = ConcurrencyUtils.submit(() -> {
+                    for (int i12 = firstIdx; i12 < lastIdx; i12++) {
+                        int idx1 = 2 * i12;
+                        int idx2 = idx1 + 1;
+                        float im = -ak[idx1] * bk2[idx2] + ak[idx2] * bk2[idx1];
+                        ak[idx1] = ak[idx1] * bk2[idx1] + ak[idx2] * bk2[idx2];
+                        ak[idx2] = im;
                     }
                 });
             }
@@ -1583,13 +1561,11 @@ public strictfp class FloatFFT {
             for (int i = 0; i < nthreads; i++) {
                 final int firstIdx = i * k;
                 final int lastIdx = (i == (nthreads - 1)) ? n : firstIdx + k;
-                futures[i] = ConcurrencyUtils.submit(new Runnable() {
-                    public void run() {
-                        for (int i = firstIdx; i < lastIdx; i++) {
-                            int idx1 = 2 * i;
-                            int idx2 = idx1 + 1;
-                            a[offa + i] = bk1[idx1] * ak[idx1] - bk1[idx2] * ak[idx2];
-                        }
+                futures[i] = ConcurrencyUtils.submit(() -> {
+                    for (int i1 = firstIdx; i1 < lastIdx; i1++) {
+                        int idx1 = 2 * i1;
+                        int idx2 = idx1 + 1;
+                        a[offa + i1] = bk1[idx1] * ak[idx1] - bk1[idx2] * ak[idx2];
                     }
                 });
             }
@@ -1628,15 +1604,13 @@ public strictfp class FloatFFT {
             for (int i = 0; i < nthreads; i++) {
                 final int firstIdx = i * k;
                 final int lastIdx = (i == (nthreads - 1)) ? n : firstIdx + k;
-                futures[i] = ConcurrencyUtils.submit(new Runnable() {
-                    public void run() {
-                        for (int i = firstIdx; i < lastIdx; i++) {
-                            int idx1 = 2 * i;
-                            int idx2 = idx1 + 1;
-                            int idx3 = offa + i;
-                            ak[idx1] = a[idx3] * bk1[idx1];
-                            ak[idx2] = a[idx3] * bk1[idx2];
-                        }
+                futures[i] = ConcurrencyUtils.submit(() -> {
+                    for (int i12 = firstIdx; i12 < lastIdx; i12++) {
+                        int idx1 = 2 * i12;
+                        int idx2 = idx1 + 1;
+                        int idx3 = offa + i12;
+                        ak[idx1] = a[idx3] * bk1[idx1];
+                        ak[idx2] = a[idx3] * bk1[idx2];
                     }
                 });
             }
@@ -1648,15 +1622,13 @@ public strictfp class FloatFFT {
             for (int i = 0; i < nthreads; i++) {
                 final int firstIdx = i * k;
                 final int lastIdx = (i == (nthreads - 1)) ? nBluestein : firstIdx + k;
-                futures[i] = ConcurrencyUtils.submit(new Runnable() {
-                    public void run() {
-                        for (int i = firstIdx; i < lastIdx; i++) {
-                            int idx1 = 2 * i;
-                            int idx2 = idx1 + 1;
-                            float im = -ak[idx1] * bk2[idx2] + ak[idx2] * bk2[idx1];
-                            ak[idx1] = ak[idx1] * bk2[idx1] + ak[idx2] * bk2[idx2];
-                            ak[idx2] = im;
-                        }
+                futures[i] = ConcurrencyUtils.submit(() -> {
+                    for (int i1 = firstIdx; i1 < lastIdx; i1++) {
+                        int idx1 = 2 * i1;
+                        int idx2 = idx1 + 1;
+                        float im = -ak[idx1] * bk2[idx2] + ak[idx2] * bk2[idx1];
+                        ak[idx1] = ak[idx1] * bk2[idx1] + ak[idx2] * bk2[idx2];
+                        ak[idx2] = im;
                     }
                 });
             }
@@ -2733,8 +2705,7 @@ public strictfp class FloatFFT {
         ipph = (ip + 1) / 2;
         nbd = (ido - 1) / 2;
         if (ido != 1) {
-            for (int ik = 0; ik < idl1; ik++)
-                out[out_off + ik] = in[in_off + ik];
+            if (idl1 >= 0) System.arraycopy(in, in_off, out, out_off, idl1);
             for (int j = 1; j < ip; j++) {
                 int idx1 = j * l1 * ido;
                 for (int k = 0; k < l1; k++) {
@@ -5501,45 +5472,41 @@ public strictfp class FloatFFT {
         for (i = 0; i < nthreads; i++) {
             final int firstIdx = offa + i * m;
             if (i != idiv4) {
-                futures[idx++] = ConcurrencyUtils.submit(new Runnable() {
-                    public void run() {
-                        int isplt, j, k, m;
-                        int idx1 = firstIdx + mf;
-                        m = n;
-                        while (m > 512) {
-                            m >>= 2;
-                            cftmdl1(m, a, idx1 - m, w, nw - (m >> 1));
-                        }
-                        cftleaf(m, 1, a, idx1 - m, nw, w);
-                        k = 0;
-                        int idx2 = firstIdx - m;
-                        for (j = mf - m; j > 0; j -= m) {
-                            k++;
-                            isplt = cfttree(m, j, k, a, firstIdx, nw, w);
-                            cftleaf(m, isplt, a, idx2 + j, nw, w);
-                        }
+                futures[idx++] = ConcurrencyUtils.submit(() -> {
+                    int isplt, j, k, m12;
+                    int idx1 = firstIdx + mf;
+                    m12 = n;
+                    while (m12 > 512) {
+                        m12 >>= 2;
+                        cftmdl1(m12, a, idx1 - m12, w, nw - (m12 >> 1));
+                    }
+                    cftleaf(m12, 1, a, idx1 - m12, nw, w);
+                    k = 0;
+                    int idx2 = firstIdx - m12;
+                    for (j = mf - m12; j > 0; j -= m12) {
+                        k++;
+                        isplt = cfttree(m12, j, k, a, firstIdx, nw, w);
+                        cftleaf(m12, isplt, a, idx2 + j, nw, w);
                     }
                 });
             } else {
-                futures[idx++] = ConcurrencyUtils.submit(new Runnable() {
-                    public void run() {
-                        int isplt, j, k, m;
-                        int idx1 = firstIdx + mf;
-                        k = 1;
-                        m = n;
-                        while (m > 512) {
-                            m >>= 2;
-                            k <<= 2;
-                            cftmdl2(m, a, idx1 - m, w, nw - m);
-                        }
-                        cftleaf(m, 0, a, idx1 - m, nw, w);
-                        k >>= 1;
-                        int idx2 = firstIdx - m;
-                        for (j = mf - m; j > 0; j -= m) {
-                            k++;
-                            isplt = cfttree(m, j, k, a, firstIdx, nw, w);
-                            cftleaf(m, isplt, a, idx2 + j, nw, w);
-                        }
+                futures[idx++] = ConcurrencyUtils.submit(() -> {
+                    int isplt, j, k, m1;
+                    int idx1 = firstIdx + mf;
+                    k = 1;
+                    m1 = n;
+                    while (m1 > 512) {
+                        m1 >>= 2;
+                        k <<= 2;
+                        cftmdl2(m1, a, idx1 - m1, w, nw - m1);
+                    }
+                    cftleaf(m1, 0, a, idx1 - m1, nw, w);
+                    k >>= 1;
+                    int idx2 = firstIdx - m1;
+                    for (j = mf - m1; j > 0; j -= m1) {
+                        k++;
+                        isplt = cfttree(m1, j, k, a, firstIdx, nw, w);
+                        cftleaf(m1, isplt, a, idx2 + j, nw, w);
                     }
                 });
             }
@@ -6539,12 +6506,9 @@ public strictfp class FloatFFT {
             for (int i = 0; i < nthreads; i++) {
                 final int firstIdx = offa + i * k;
                 final int lastIdx = (i == (nthreads - 1)) ? offa + n2 : firstIdx + k;
-                futures[i] = ConcurrencyUtils.submit(new Runnable() {
-
-                    public void run() {
-                        for (int i = firstIdx; i < lastIdx; i++) {
-                            a[i] *= norm;
-                        }
+                futures[i] = ConcurrencyUtils.submit(() -> {
+                    for (int i1 = firstIdx; i1 < lastIdx; i1++) {
+                        a[i1] *= norm;
                     }
                 });
             }

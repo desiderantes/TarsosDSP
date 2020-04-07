@@ -57,7 +57,7 @@ class CatSample {
                 @Override
                 public void handlePitch(PitchDetectionResult pitchDetectionResult, AudioEvent audioEvent) {
                     if (pitchDetectionResult.isPitched())
-                        pitches.add(pitchDetectionResult.getPitch());
+                        pitches.add(pitchDetectionResult.pitch);
                 }
             }));
             dispatcher.run();

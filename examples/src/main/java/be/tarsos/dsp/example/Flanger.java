@@ -129,7 +129,7 @@ public class Flanger extends JFrame implements TarsosDSPDemo {
         lfoFrequency.addChangeListener(arg0 -> {
             if (flangerEffect != null) {
                 double frequency = lfoFrequency.getValue() / 10.0;
-                flangerEffect.setLFOFrequency(frequency);
+                flangerEffect.setLfoFrequency(frequency);
             }
             defaultFrequency = lfoFrequency.getValue();
         });

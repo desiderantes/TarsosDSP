@@ -180,7 +180,7 @@ public class Player implements AudioProcessor {
     public void setTempo(double newTempo) {
         tempo = newTempo;
         if (state == PlayerState.PLAYING) {
-            wsola.setParameters(Parameters.slowdownDefaults(tempo, dispatcher.getFormat().getSampleRate()));
+            wsola.setParameters(Parameters.slowdownDefaults(tempo, dispatcher.format.getSampleRate()));
         }
     }
 

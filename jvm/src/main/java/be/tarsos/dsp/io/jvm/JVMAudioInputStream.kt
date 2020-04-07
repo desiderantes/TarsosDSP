@@ -36,7 +36,7 @@ import javax.sound.sampled.AudioInputStream
 class JVMAudioInputStream(private val underlyingStream: AudioInputStream) :
     TarsosDSPAudioInputStream,
     AutoCloseable {
-    private val tarsosDSPAudioFormat: TarsosDSPAudioFormat
+    override val format: TarsosDSPAudioFormat = toTarsosDSPFormat(underlyingStream.format)
 
     @Throws(IOException::class)
     override fun skip(bytesToSkip: Long): Long {
@@ -53,13 +53,7 @@ class JVMAudioInputStream(private val underlyingStream: AudioInputStream) :
         underlyingStream.close()
     }
 
-    override fun getFrameLength(): Long {
-        return underlyingStream.frameLength
-    }
-
-    override fun getFormat(): TarsosDSPAudioFormat {
-        return tarsosDSPAudioFormat
-    }
+    override val frameLength: Long = underlyingStream.frameLength
 
     companion object {
         /**
@@ -99,10 +93,5 @@ class JVMAudioInputStream(private val underlyingStream: AudioInputStream) :
                 format.isBigEndian
             )
         }
-    }
-
-    init {
-        tarsosDSPAudioFormat =
-            toTarsosDSPFormat(underlyingStream.format)
     }
 }

@@ -65,7 +65,7 @@ public class SpectralParabolicInterpolationExample {
 
             @Override
             public boolean process(AudioEvent audioEvent) {
-                float[] buffer = audioEvent.getFloatBuffer().clone();
+                float[] buffer = audioEvent.floatBuffer.clone();
                 fft.forwardTransform(buffer);
                 fft.modulus(buffer, amplitudes);
                 int maxIndex = -10;

@@ -196,11 +196,11 @@ public class SoundDetector extends JFrame implements AudioProcessor, TarsosDSPDe
     }
 
     private void handleSound() {
-        if (silenceDetector.currentSPL() > threshold) {
-            textArea.append("Sound detected at:" + System.currentTimeMillis() + ", " + (int) (silenceDetector.currentSPL()) + "dB SPL\n");
+        if (silenceDetector.getCurrentSPL() > threshold) {
+            textArea.append("Sound detected at:" + System.currentTimeMillis() + ", " + (int) (silenceDetector.getCurrentSPL()) + "dB SPL\n");
             textArea.setCaretPosition(textArea.getDocument().getLength());
         }
-        graphPanel.addDataPoint(silenceDetector.currentSPL(), System.currentTimeMillis());
+        graphPanel.addDataPoint(silenceDetector.getCurrentSPL(), System.currentTimeMillis());
     }
 
     @Override

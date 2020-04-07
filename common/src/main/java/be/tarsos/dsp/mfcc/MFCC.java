@@ -95,7 +95,7 @@ public class MFCC implements AudioProcessor {
 
     @Override
     public boolean process(AudioEvent audioEvent) {
-        audioFloatBuffer = audioEvent.getFloatBuffer().clone();
+        audioFloatBuffer = audioEvent.floatBuffer.clone();
 
         // Magnitude Spectrum
         float bin[] = magnitudeSpectrum(audioFloatBuffer);

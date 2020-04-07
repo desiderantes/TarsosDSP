@@ -72,7 +72,7 @@ public class Spectrogram extends JFrame implements PitchDetectionHandler, Tarsos
 
         @Override
         public boolean process(AudioEvent audioEvent) {
-            float[] audioFloatBuffer = audioEvent.getFloatBuffer();
+            float[] audioFloatBuffer = audioEvent.floatBuffer;
             float[] transformbuffer = new float[bufferSize * 2];
             System.arraycopy(audioFloatBuffer, 0, transformbuffer, 0, audioFloatBuffer.length);
             fft.forwardTransform(transformbuffer);
@@ -185,7 +185,7 @@ public class Spectrogram extends JFrame implements PitchDetectionHandler, Tarsos
     @Override
     public void handlePitch(PitchDetectionResult pitchDetectionResult, AudioEvent audioEvent) {
         if (pitchDetectionResult.isPitched()) {
-            pitch = pitchDetectionResult.getPitch();
+            pitch = pitchDetectionResult.pitch;
         } else {
             pitch = -1;
         }
