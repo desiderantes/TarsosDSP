@@ -39,12 +39,12 @@ class UtterAsteriskPanel : JPanel() {
         doubleArrayOf(3.0, 1.0, 4.0, 4.0, 4.0, 6.0, 3.0, 1.0, 4.0, 4.0, 4.0, 6.0) //in eight notes
     var startTimeStamps: ArrayList<Double> = ArrayList()
     var pitches: ArrayList<Double> = ArrayList()
-    private val patternLength //in seconds
-            : Double
-    private var currentMarker: Double
+    //in seconds
+    private val patternLength: Double = 12.0
+    private var currentMarker: Double = 0.0
     private var lastReset: Long = 0
     private var score = 0
-    private var patternLengthInQuarterNotes = 0.0
+    private var patternLengthInQuarterNotes = timing.sum()
     override fun paint(g: Graphics) {
         val graphics = g as Graphics2D
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
@@ -128,13 +128,5 @@ class UtterAsteriskPanel : JPanel() {
          */
         private const val serialVersionUID = -5330666476785715988L
         private const val CENTS_DEVIATION = 30.0
-    }
-
-    init {
-        for (timeInQuarterNotes in timing) {
-            patternLengthInQuarterNotes += timeInQuarterNotes
-        }
-        patternLength = 12.0
-        currentMarker = 0.0
     }
 }
