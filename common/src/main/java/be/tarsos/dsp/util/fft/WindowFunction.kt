@@ -77,7 +77,7 @@ package be.tarsos.dsp.util.fft
  * @author Damien Di Fede
  * @author Corban Brook
  */
-abstract class WindowFunction  {
+abstract class WindowFunction {
     protected var length = 0
 
     /**
@@ -106,7 +106,7 @@ abstract class WindowFunction  {
         return samples
     }
 
-    operator fun invoke (samples: FloatArray) {
+    operator fun invoke(samples: FloatArray) {
         apply(samples)
     }
 

@@ -39,6 +39,7 @@
  */
 package be.tarsos.dsp.util.fft
 
+import be.tarsos.dsp.util.PI
 import be.tarsos.dsp.util.TWO_PI
 import kotlin.math.cos
 
@@ -57,7 +58,7 @@ class BlackmanWindow
         val a0 = (1 - alpha) / 2f
         val a1 = 0.5f
         val a2 = alpha / 2f
-        return a0 - a1 * cos(TWO_PI * index / (length - 1)) + a2 * cos(4 * Math.PI * index / (length - 1))
+        return a0 - a1 * cos(TWO_PI * index / (length - 1)) + a2 * cos(4 * PI * index / (length - 1))
             .toFloat()
     }
 }

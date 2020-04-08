@@ -20,22 +20,32 @@
  *  for credits and info, see README.
  *
  */
-package be.tarsos.dsp
+package be.tarsos.dsp.wavelet.lift
 
+import be.tarsos.dsp.AudioEvent
+import be.tarsos.dsp.AudioProcessor
+import java.util.*
 import kotlin.math.abs
 
-class AutoCorrelation : AudioProcessor {
-    private var result = 0f
+class Daubechies4WaveletCoder @JvmOverloads constructor(var compression: Int = 16) : AudioProcessor {
+    private val transform: Daubechies4Wavelet = Daubechies4Wavelet()
     override fun process(audioEvent: AudioEvent): Boolean {
-        result += audioEvent.floatBuffer.sumByDouble { (abs(it) / audioEvent.bufferSize).toDouble() }.toFloat()
+        val audioBuffer = audioEvent.floatBuffer
+        val sortBuffer = FloatArray(audioBuffer.size)
+        transform.forwardTrans(audioBuffer)
+        for (i in sortBuffer.indices) {
+            sortBuffer[i] = abs(audioBuffer[i])
+        }
+        Arrays.sort(sortBuffer)
+        val threshold = sortBuffer[compression].toDouble()
+        for (i in audioBuffer.indices) {
+            if (abs(audioBuffer[i]) <= threshold) {
+                audioBuffer[i] = 0F
+            }
+        }
         return true
     }
 
     override fun processingFinished() {}
-    val values: FloatArray
-        get() {
-            val returnValue = FloatArray(1)
-            returnValue[0] = result
-            return returnValue
-        }
+
 }

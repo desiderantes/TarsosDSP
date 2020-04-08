@@ -28,8 +28,8 @@ class Granulator(sampleRate: Float, bufferSize: Int) : AudioProcessor {
     protected var position = 0.0
 
 
-    private var grainInterval: Float  = 40.0f
-    private var grainSize: Float  = 100.0f
+    private var grainInterval: Float = 40.0f
+    private var grainSize: Float = 100.0f
     private var grainRandomness: Float = 0.1f
 
     /**
@@ -52,7 +52,7 @@ class Granulator(sampleRate: Float, bufferSize: Int) : AudioProcessor {
     /**
      * The pitch, bound to the pitch envelope.
      */
-    private var pitchFactor: Float  = 1.0f
+    private var pitchFactor: Float = 1.0f
 
     /**
      * The pitch, bound to the pitch envelope.

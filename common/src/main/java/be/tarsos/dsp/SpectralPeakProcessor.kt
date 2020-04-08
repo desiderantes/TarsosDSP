@@ -23,6 +23,7 @@
 package be.tarsos.dsp
 
 import be.tarsos.dsp.util.PitchConverter.hertzToAbsoluteCent
+import be.tarsos.dsp.util.TWO_PI
 import be.tarsos.dsp.util.fft.FFT
 import be.tarsos.dsp.util.fft.HammingWindow
 import java.util.*
@@ -87,7 +88,7 @@ class SpectralPeakProcessor(
      */
     private val dt: Double = (bufferSize - overlap) / sampleRate.toDouble()
     private val cbin: Double = (dt * sampleRate / bufferSize.toDouble())
-    private val inv_2pi: Double = (1.0 / (2.0 * Math.PI))
+    private val inv_2pi: Double = (1.0 / TWO_PI)
     private val inv_deltat: Double = (1.0 / dt)
     private val inv_2pideltat: Double = (inv_deltat * inv_2pi)
 

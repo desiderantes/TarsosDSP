@@ -147,7 +147,7 @@ sealed class TarsosDSPAudioFloatConverter {
             val out_offset_end = in_len * stepsize
             var i = out_offset + offset
             while (i < out_offset_end) {
-                out_buff[i] = (out_buff[i] and mask) as Byte
+                out_buff[i] = (out_buff[i] and mask)
                 i += stepsize
             }
             return ret
@@ -162,7 +162,7 @@ sealed class TarsosDSPAudioFloatConverter {
             val in_offset_end = out_len * stepsize
             var i = in_offset + offset
             while (i < in_offset_end) {
-                mask_buffer!![i] = (mask_buffer!![i] and mask) as Byte
+                mask_buffer!![i] = (mask_buffer!![i] and mask)
                 i += stepsize
             }
             return converter!!.toFloatArray(
@@ -520,7 +520,8 @@ sealed class TarsosDSPAudioFloatConverter {
             var ix = in_offset
             var ox = out_offset
             for (i in 0 until out_len) {
-                val x: Int = (in_buff[ix++] and 0xFF.toByte() or (in_buff[ix++] and 0xFF.toByte() shl 8.toByte())).toInt()
+                val x: Int =
+                    (in_buff[ix++] and 0xFF.toByte() or (in_buff[ix++] and 0xFF.toByte() shl 8.toByte())).toInt()
                 out_buff[ox++] = (x - 32767) * (1.0f / 32767.0f)
             }
             return out_buff
@@ -550,7 +551,8 @@ sealed class TarsosDSPAudioFloatConverter {
             var ix = in_offset
             var ox = out_offset
             for (i in 0 until out_len) {
-                val x: Int = (in_buff[ix++] and 0xFF.toByte() shl 8.toByte() or (in_buff[ix++] and 0xFF.toByte())).toInt()
+                val x: Int =
+                    (in_buff[ix++] and 0xFF.toByte() shl 8.toByte() or (in_buff[ix++] and 0xFF.toByte())).toInt()
                 out_buff[ox++] = (x - 32767) * (1.0f / 32767.0f)
             }
             return out_buff
@@ -1024,7 +1026,6 @@ sealed class TarsosDSPAudioFloatConverter {
     }
 
     companion object {
-        val PCM_FLOAT = TarsosDSPAudioFormat.Encoding("PCM_FLOAT")
         @JvmStatic
         fun getConverter(format: TarsosDSPAudioFormat): TarsosDSPAudioFloatConverter? {
             var conv: TarsosDSPAudioFloatConverter? = null
@@ -1130,7 +1131,7 @@ sealed class TarsosDSPAudioFloatConverter {
                         }
                     }
                 }
-            } else if (format.encoding == PCM_FLOAT) {
+            } else if (format.encoding == TarsosDSPAudioFormat.Encoding.PCM_FLOAT) {
                 if (format.sampleSizeInBits == 32) {
                     conv = if (format.isBigEndian) AudioFloatConversion32B() else AudioFloatConversion32L()
                 } else if (format.sampleSizeInBits == 64) {

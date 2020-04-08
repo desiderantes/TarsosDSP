@@ -191,7 +191,7 @@ class PipeDecoder {
             if (printErrorstream) {
                 ErrorStreamGobbler(process.errorStream, LOG).start()
             }
-            thread(start=true, name = "Decoding Pipe") {
+            thread(start = true, name = "Decoding Pipe") {
                 try {
                     process.waitFor()
                     LOG.info("Finished piped decoding process")
@@ -230,7 +230,7 @@ class PipeDecoder {
                 }
             val essg = ErrorStreamStringGlobber(process.errorStream)
             essg.start()
-            thread(start=true, name = "Decoding Pipe") {
+            thread(start = true, name = "Decoding Pipe") {
                 try {
                     process.waitFor()
                     LOG.info("Finished piped decoding process")
@@ -261,7 +261,7 @@ class PipeDecoder {
 
     fun printBinaryInfo() {
         try {
-            val p =Runtime.getRuntime().exec(decoderBinaryAbsolutePath)
+            val p = Runtime.getRuntime().exec(decoderBinaryAbsolutePath)
 
             p.errorStream.bufferedReader().useLines {
                 println(it)

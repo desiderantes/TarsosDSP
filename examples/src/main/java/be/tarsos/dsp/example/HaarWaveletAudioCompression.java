@@ -68,12 +68,12 @@ public class HaarWaveletAudioCompression extends JFrame implements TarsosDSPDemo
         Runnable r = () -> {
             try {
                 AudioDispatcher adp = AudioDispatcherFactory.fromPipe(source, 44100, 32, 0);
-                AudioFormat format = JVMAudioInputStream.toAudioFormat(adp.format);
+                AudioFormat format = JVMAudioInputStream.toAudioFormat(adp.getFormat());
                 coder = new HaarWaveletCoder();
                 HaarWaveletDecoder decoder = new HaarWaveletDecoder();
                 gain = new GainProcessor(1.0);
                 bithDeptProcessor = new BitDepthProcessor();
-                bithDeptProcessor.bitDepth = adp.format.getSampleSizeInBits();
+                bithDeptProcessor.setBitDepth(adp.getFormat().getSampleSizeInBits());
 
                 adp.addAudioProcessor(coder);
                 adp.addAudioProcessor(decoder);
@@ -139,7 +139,7 @@ public class HaarWaveletAudioCompression extends JFrame implements TarsosDSPDemo
             int compressionValue = compressionSlider.getValue();
             label.setText(String.format("Compression: %3d", compressionValue));
             if (coder != null)
-                coder.compression = compressionValue;
+                coder.setCompression(compressionValue);
         });
 
         JPanel compressionPanel = new JPanel(new BorderLayout());
@@ -161,7 +161,7 @@ public class HaarWaveletAudioCompression extends JFrame implements TarsosDSPDemo
             int bitDepth = bitDepthcompressionSlider.getValue();
             label.setText(String.format("Bit depth (bits): %3d", bitDepth));
             if (bithDeptProcessor != null)
-                bithDeptProcessor.bitDepth = bitDepth;
+                bithDeptProcessor.setBitDepth(bitDepth);
         });
         JPanel compressionPanel = new JPanel(new BorderLayout());
         label.setToolTipText("Bit depth in bits.");

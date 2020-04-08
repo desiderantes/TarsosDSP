@@ -58,13 +58,16 @@ class PitchShifter(
             /* map delta phase into +/- Pi interval */
             var qpd = (tmp / PI).toLong()
             if (qpd >= 0) qpd += qpd and 1 else qpd -= qpd and 1
-            tmp -= Math.PI * qpd.toDouble()
+            tmp -= PI * qpd.toDouble()
 
-            /* get deviation from bin frequency from the +/- Pi interval */tmp = osamp * tmp / (2.0 * Math.PI)
+            /* get deviation from bin frequency from the +/- Pi interval */
+            tmp = osamp * tmp / TWO_PI
 
-            /* compute the k-th partials' true frequency */tmp = i.toDouble() * freqPerBin + tmp * freqPerBin
+            /* compute the k-th partials' true frequency */
+            tmp = i.toDouble() * freqPerBin + tmp * freqPerBin
 
-            /* store magnitude and true frequency in analysis arrays */currentFrequencies[i] = tmp.toFloat()
+            /* store magnitude and true frequency in analysis arrays */
+            currentFrequencies[i] = tmp.toFloat()
         }
 
         /* ***************** PROCESSING ******************* */
@@ -112,7 +115,7 @@ class PitchShifter(
         fft.backwardsTransform(newFFTData)
         for (i in newFFTData.indices) {
             val window =
-                (-.5 * cos(2.0 * Math.PI * i.toDouble() / size.toDouble()) + .5).toFloat()
+                (-.5 * cos(2.0 * PI * i.toDouble() / size.toDouble()) + .5).toFloat()
             //outputAccumulator[i] += 2000*window*newFFTData[i]/(float) (size*osamp);
             outputAccumulator[i] += window * newFFTData[i] / osamp.toFloat()
             if (outputAccumulator[i] > 1.0 || outputAccumulator[i] < -1.0) {

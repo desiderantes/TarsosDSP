@@ -156,7 +156,7 @@ class FeatureExtractor() : TarsosDSPDemo {
             dispatcher.addAudioProcessor(object : AudioProcessor {
                 override fun processingFinished() {}
                 override fun process(audioEvent: AudioEvent): Boolean {
-                    println(audioEvent.timeStamp.toString() + "," + audioEvent.rms)
+                    println(audioEvent.timeStamp.toString() + "," + audioEvent.rMS)
                     return true
                 }
             })

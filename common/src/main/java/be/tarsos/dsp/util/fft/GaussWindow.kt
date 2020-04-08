@@ -55,6 +55,7 @@ class GaussWindow @JvmOverloads constructor(var alpha: Double = 0.25) : WindowFu
         return E.pow(-0.5 * ((index - (length - 1) / 2.toDouble()) / (alpha * (length - 1) / 2.toDouble())).pow(2.toDouble()))
             .toFloat()
     }
+
     init {
         require(!(alpha < 0.0 || alpha > 0.5)) { "Range for GaussWindow out of bounds. Value must be <= 0.5" }
     }

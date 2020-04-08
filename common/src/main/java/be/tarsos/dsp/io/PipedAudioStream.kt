@@ -75,7 +75,8 @@ class PipedAudioStream(resource: String) {
         targetSampleRate: Int, startTimeOffset: Double,
         numberOfSeconds: Double
     ): TarsosDSPAudioInputStream {
-        val stream: InputStream = decoder.getDecodedStream(resource, targetSampleRate, startTimeOffset, numberOfSeconds)!!
+        val stream: InputStream =
+            decoder.getDecodedStream(resource, targetSampleRate, startTimeOffset, numberOfSeconds)!!
         return UniversalAudioInputStream(stream, getTargetFormat(targetSampleRate))
     }
 

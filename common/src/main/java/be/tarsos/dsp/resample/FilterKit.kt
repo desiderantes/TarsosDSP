@@ -34,7 +34,6 @@
  */
 package be.tarsos.dsp.resample
 
-import be.tarsos.dsp.resample.Resampler
 import be.tarsos.dsp.util.PI
 import kotlin.math.floor
 import kotlin.math.sin
@@ -243,7 +242,7 @@ internal object FilterKit {
         var Hp_index: Int
         if (Interp) {
             var Hdp_index: Int
-            while ((Ho.also{ Hp_index = it.toInt() }) < End_index){
+            while ((Ho.also { Hp_index = it.toInt() }) < End_index) {
                 t = Imp[Hp_index] // Get IR sample
                 Hdp_index = Ho.toInt() // get interp bits from diff table
                 a = (Ho - floor(Ho)).toFloat() // a is logically between 0
@@ -255,7 +254,7 @@ internal object FilterKit {
                 Xp_index += Inc // Input signal step. NO CHECK ON BOUNDS
             }
         } else {
-            while ((Ho.also{ Hp_index = it.toInt() }) < End_index){
+            while ((Ho.also { Hp_index = it.toInt() }) < End_index) {
                 t = Imp[Hp_index] // Get IR sample
                 t *= Xp_array[Xp_index] // Mult coeff by input sample
                 v += t // The filter output

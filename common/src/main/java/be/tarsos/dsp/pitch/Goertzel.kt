@@ -24,6 +24,7 @@ package be.tarsos.dsp.pitch
 
 import be.tarsos.dsp.AudioEvent
 import be.tarsos.dsp.AudioProcessor
+import be.tarsos.dsp.util.TWO_PI
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.exp
@@ -134,12 +135,10 @@ class Goertzel(
     init {
         for (i in frequenciesToDetect.indices) {
             precalculatedCosines[i] = 2 * cos(
-                (2 * Math.PI
-                        * frequenciesToDetect[i]) / audioSampleRate
+                (TWO_PI * frequenciesToDetect[i]) / audioSampleRate
             )
             precalculatedWnk[i] = exp(
-                (-2 * Math.PI
-                        * frequenciesToDetect[i]) / audioSampleRate
+                (-TWO_PI * frequenciesToDetect[i]) / audioSampleRate
             )
         }
     }

@@ -68,7 +68,7 @@ public class AdvancedAudioPlayer extends JFrame implements TarsosDSPDemo {
 
         @Override
         public boolean process(AudioEvent audioEvent) {
-            float[] audioFloatBuffer = audioEvent.floatBuffer;
+            float[] audioFloatBuffer = audioEvent.getFloatBuffer();
             int bufferSize = audioFloatBuffer.length;
             float[] transformbuffer = new float[bufferSize * 2];
             if (prevSize != bufferSize) {
@@ -89,7 +89,7 @@ public class AdvancedAudioPlayer extends JFrame implements TarsosDSPDemo {
     private JSlider positionSlider;
     private JButton playButton;
     private JButton stopButton;
-    private JButton pauzeButton;
+    private JButton pauseButton;
     private JLabel progressLabel;
     private JLabel totalLabel;
     private JFileChooser fileChooser;
@@ -130,7 +130,7 @@ public class AdvancedAudioPlayer extends JFrame implements TarsosDSPDemo {
 
         player = new Player(processor, fftProcessor);
         player.addPropertyChangeListener(arg0 -> {
-            if (arg0.getPropertyName() == "state") {
+            if (arg0.getPropertyName().equalsIgnoreCase("state")) {
                 PlayerState newState = (PlayerState) arg0.getNewValue();
                 reactToPlayerState(newState);
             }
@@ -149,7 +149,7 @@ public class AdvancedAudioPlayer extends JFrame implements TarsosDSPDemo {
     private void reactToPlayerState(PlayerState newState) {
         positionSlider.setEnabled(newState != PlayerState.NO_FILE_LOADED);
         playButton.setEnabled(newState != PlayerState.PLAYING && newState != PlayerState.NO_FILE_LOADED);
-        pauzeButton.setEnabled(newState == PlayerState.PLAYING && newState != PlayerState.NO_FILE_LOADED);
+        pauseButton.setEnabled(newState == PlayerState.PLAYING && newState != PlayerState.NO_FILE_LOADED);
         stopButton.setEnabled((newState == PlayerState.PLAYING || newState == PlayerState.PAUSED) && newState != PlayerState.NO_FILE_LOADED);
 
         if (newState == PlayerState.STOPPED || newState == PlayerState.FILE_LOADED) {
@@ -259,9 +259,9 @@ public class AdvancedAudioPlayer extends JFrame implements TarsosDSPDemo {
         playButton.addActionListener(actionEvent -> player.play());
         fileChooserPanel.add(playButton);
 
-        pauzeButton = new JButton("Pauze");
-        pauzeButton.addActionListener(actionEvent -> player.pause());
-        fileChooserPanel.add(pauzeButton);
+        pauseButton = new JButton("Pause");
+        pauseButton.addActionListener(actionEvent -> player.pause());
+        fileChooserPanel.add(pauseButton);
 
         return fileChooserPanel;
     }
@@ -293,7 +293,7 @@ public class AdvancedAudioPlayer extends JFrame implements TarsosDSPDemo {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Advanced Audio Player Example";
     }
 
     @Override

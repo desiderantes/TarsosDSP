@@ -42,6 +42,7 @@
 package be.tarsos.dsp.beatroot
 
 import java.util.*
+import kotlin.math.sqrt
 
 object Peaks {
     var debug = false
@@ -187,7 +188,7 @@ object Peaks {
             sxx += datum * datum
         }
         val mean = sx / data.size
-        var sd = Math.sqrt((sxx - sx * mean) / data.size)
+        var sd = sqrt((sxx - sx * mean) / data.size)
         if (sd == 0.0) sd = 1.0 // all data[i] == mean  -> 0; avoids div by 0
         for (i in data.indices) {
             data[i] = (data[i] - mean) / sd

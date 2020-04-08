@@ -33,7 +33,10 @@ import kotlin.math.sqrt
  *
  * @author Joren Six
  */
-class FFT @JvmOverloads constructor(private val fftSize: Int, private val windowFunction: WindowFunction = RectangularWindow()) {
+class FFT @JvmOverloads constructor(
+    private val fftSize: Int,
+    private val windowFunction: WindowFunction = RectangularWindow()
+) {
     /**
      * Forward FFT.
      */

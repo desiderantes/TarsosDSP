@@ -1,45 +1,39 @@
-package be.tarsos.dsp.test;
+package be.tarsos.dsp.test
 
-import org.junit.jupiter.api.Test;
+import be.tarsos.dsp.wavelet.HaarWaveletTransform
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 
-import be.tarsos.dsp.wavelet.HaarWaveletTransform;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-public class HaarWaveletTransformTest {
-
+class HaarWaveletTransformTest {
     @Test
-    public void testTransform() {
-        HaarWaveletTransform ht = new HaarWaveletTransform();
-        float[] data = {5, 1, 2, 8};
-        ht.transform(data);
-        float[] expected = {4, 2, -1, -3};
-        assertArrayEquals(expected, data);
-
-        float[] otherData = {3, 1, 0, 4, 8, 6, 9, 9};
-        ht.transform(otherData);
-        float[] expectedResult = {5, 1, 0, -2, -3, 1, -1, 0};
-        assertArrayEquals(expectedResult, otherData);
+    fun testTransform() {
+        val ht = HaarWaveletTransform()
+        val data = floatArrayOf(5f, 1f, 2f, 8f)
+        ht.transform(data)
+        val expected = floatArrayOf(4f, 2f, -1f, -3f)
+        assertArrayEquals(expected, data)
+        val otherData = floatArrayOf(3f, 1f, 0f, 4f, 8f, 6f, 9f, 9f)
+        ht.transform(otherData)
+        val expectedResult = floatArrayOf(5f, 1f, 0f, -2f, -3f, 1f, -1f, 0f)
+        assertArrayEquals(expectedResult, otherData)
     }
 
     @Test
-    public void testInverseTransform() {
-        HaarWaveletTransform ht = new HaarWaveletTransform();
-        float[] data = {4, 2, -1, -3};
-        ht.inverseTransform(data);
-        float[] expected = {5, 1, 2, 8};
-        assertArrayEquals(expected, data);
-
-        float[] otherData = {5, 1, 0, -2, -3, 1, -1, 0};
-        ht.inverseTransform(otherData);
-        float[] expectedResult = {3, 1, 0, 4, 8, 6, 9, 9};
-        assertArrayEquals(expectedResult, otherData);
+    fun testInverseTransform() {
+        val ht = HaarWaveletTransform()
+        val data = floatArrayOf(4f, 2f, -1f, -3f)
+        ht.inverseTransform(data)
+        val expected = floatArrayOf(5f, 1f, 2f, 8f)
+        assertArrayEquals(expected, data)
+        val otherData = floatArrayOf(5f, 1f, 0f, -2f, -3f, 1f, -1f, 0f)
+        ht.inverseTransform(otherData)
+        val expectedResult = floatArrayOf(3f, 1f, 0f, 4f, 8f, 6f, 9f, 9f)
+        assertArrayEquals(expectedResult, otherData)
     }
 
-    private void assertArrayEquals(float[] expecteds, float[] actuals) {
-        for (int i = 0; i < expecteds.length; i++) {
-            assertEquals(expecteds[i], actuals[i], 0.0001);
+    private fun assertArrayEquals(expecteds: FloatArray, actuals: FloatArray) {
+        for (i in expecteds.indices) {
+            Assertions.assertEquals(expecteds[i], actuals[i], 0.0001f)
         }
     }
-
 }

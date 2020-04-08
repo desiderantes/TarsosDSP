@@ -20,8 +20,8 @@ data class Complex
  *
  * @param real Real part
  * @param imag Imaginary part
- */( val real: Double, val imag: Double) {
-    
+ */(val real: Double, val imag: Double) {
+
     /**
      * Modulus of this Complex number
      * (the distance from the origin in polar coordinates).

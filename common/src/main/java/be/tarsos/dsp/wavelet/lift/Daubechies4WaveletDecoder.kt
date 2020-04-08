@@ -20,9 +20,19 @@
  *  for credits and info, see README.
  *
  */
+package be.tarsos.dsp.wavelet.lift
 
+import be.tarsos.dsp.AudioEvent
+import be.tarsos.dsp.AudioProcessor
 
-/**
- * Contains an MFCC implementation.
- */
-package be.tarsos.dsp.mfcc;
+class Daubechies4WaveletDecoder : AudioProcessor {
+    private val transform: Daubechies4Wavelet = Daubechies4Wavelet()
+    override fun process(audioEvent: AudioEvent): Boolean {
+        val audioBuffer = audioEvent.floatBuffer
+        transform.inverseTrans(audioBuffer)
+        return true
+    }
+
+    override fun processingFinished() {}
+
+}

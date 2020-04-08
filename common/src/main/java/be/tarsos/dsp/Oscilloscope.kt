@@ -49,7 +49,7 @@ class Oscilloscope(private val handler: OscilloscopeEventHandler) : AudioProcess
             }
         }
         val tbase = audioBuffer.size / 2.toFloat()
-        val length = Math.min(tbase.toInt(), audioBuffer.size - offset)
+        val length = tbase.toInt().coerceAtMost(audioBuffer.size - offset)
         if (dataBuffer == null || dataBuffer!!.size != length * 4) {
             dataBuffer = FloatArray(length * 4)
         }
@@ -68,6 +68,7 @@ class Oscilloscope(private val handler: OscilloscopeEventHandler) : AudioProcess
     }
 
     override fun processingFinished() {}
+
     @FunctionalInterface
     interface OscilloscopeEventHandler {
         /**

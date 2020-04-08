@@ -50,7 +50,7 @@ class GeneralizedGoertzel(
         val f: WindowFunction = HammingWindow()
         f.apply(x)
         for (j in frequenciesToDetect.indices) {
-            val pik_term = 2 * Math.PI * indvec[j] / audioEvent.bufferSize.toFloat()
+            val pik_term = TWO_PI * indvec[j] / audioEvent.bufferSize.toFloat()
             val cos_pik_term2 = cos(pik_term) * 2
             val cc = Complex(0.0, -1 * pik_term).exp()
             var s0 = 0.0

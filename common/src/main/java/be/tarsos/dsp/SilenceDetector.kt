@@ -41,6 +41,7 @@ class SilenceDetector
     private val breakProcessingQueueOnSilence: Boolean = false
 ) : AudioProcessor {
     var currentSPL = 0.0
+
     /**
      * Checks if the dBSPL level in the buffer falls below a certain threshold.
      *

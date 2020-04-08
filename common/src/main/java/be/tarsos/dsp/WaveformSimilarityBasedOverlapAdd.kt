@@ -87,7 +87,7 @@ class WaveformSimilarityBasedOverlapAdd(params: Parameters) :
         val nominalSkip = tempo * (seekWindowLength - overlapLength)
         intskip = (nominalSkip + 0.5).toInt()
         inputBufferSize = max(intskip + overlapLength, seekWindowLength) + seekLength
-        outputFloatBuffer = outputFloatBuffer.sliceArray(0 .. outputBufferSize)
+        outputFloatBuffer = outputFloatBuffer.sliceArray(0..outputBufferSize)
         lastParams = params
     }
 
@@ -355,6 +355,7 @@ class WaveformSimilarityBasedOverlapAdd(params: Parameters) :
                     overlapMs
                 )
             }
+
             @JvmStatic
             fun automaticDefaults(
                 tempo: Double,

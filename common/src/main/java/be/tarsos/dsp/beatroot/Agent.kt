@@ -186,7 +186,7 @@ class Agent {
      */
     protected fun accept(e: Event, err: Double, beats: Int) {
         beatTime = e.keyDown
-        events!!.add(e)
+        events.add(e)
         if (abs(
                 initialBeatInterval - beatInterval - err / correctionFactor
             ) < MAX_CHANGE * initialBeatInterval

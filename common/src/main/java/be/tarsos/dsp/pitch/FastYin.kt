@@ -62,7 +62,7 @@ class FastYin @JvmOverloads constructor(
      * The buffer that stores the calculated values. It is exactly half the size
      * of the input buffer.
      */
-    private val yinBuffer: FloatArray  = FloatArray(bufferSize / 2)
+    private val yinBuffer: FloatArray = FloatArray(bufferSize / 2)
 
     /**
      * The result of the pitch detection iteration.

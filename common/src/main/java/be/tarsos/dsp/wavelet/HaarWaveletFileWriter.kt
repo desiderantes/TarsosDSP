@@ -66,7 +66,7 @@ class HaarWaveletFileWriter(fileName: String, private val compression: Int) : Au
             rawOutputStream.write(placesWithZero)
             rawOutputStream.write((placesWithZero ushr 8))
             rawOutputStream.write((placesWithZero ushr 16))
-            rawOutputStream.write((placesWithZero ushr 24) )
+            rawOutputStream.write((placesWithZero ushr 24))
         } catch (e: IOException) {
             e.printStackTrace()
         }

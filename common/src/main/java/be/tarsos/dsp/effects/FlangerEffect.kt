@@ -49,6 +49,10 @@ package be.tarsos.dsp.effects
 
 import be.tarsos.dsp.AudioEvent
 import be.tarsos.dsp.AudioProcessor
+import be.tarsos.dsp.util.TWO_PI
+import kotlin.math.abs
+import kotlin.math.roundToInt
+import kotlin.math.sin
 
 /**
  *
@@ -75,7 +79,7 @@ class FlangerEffect(
      * A simple delay buffer, it holds a number of samples determined by the
      * maxFlangerLength and the sample rate.
      */
-    private var flangerBuffer: FloatArray  = FloatArray((sampleRate * maxFlangerLength).toInt())
+    private var flangerBuffer: FloatArray = FloatArray((sampleRate * maxFlangerLength).toInt())
 
     /**
      * The position in the delay buffer to store the current sample.
@@ -100,19 +104,19 @@ class FlangerEffect(
 
         // Divide f by two, to counter rectifier below, which effectively
         // doubles the frequency
-        val twoPIf = 2 * Math.PI * lfoFrequency / 2.0
+        val twoPIf = TWO_PI * lfoFrequency / 2.0
         var time = audioEvent.timeStamp
         val timeStep = 1.0 / sampleRate
         for (i in overlap until audioFloatBuffer.size) {
 
             // Calculate the LFO delay value with a sine wave:
             //fix by hans bickel
-            val lfoValue = (flangerBuffer.size - 1) * Math.sin(twoPIf * time)
+            val lfoValue = (flangerBuffer.size - 1) * sin(twoPIf * time)
             // add a time step, each iteration
             time += timeStep
 
             // Make the delay a positive integer
-            val delay = Math.round(Math.abs(lfoValue)).toInt()
+            val delay = abs(lfoValue).roundToInt()
 
             // store the current sample in the delay buffer;
             if (writePosition >= flangerBuffer.size) {

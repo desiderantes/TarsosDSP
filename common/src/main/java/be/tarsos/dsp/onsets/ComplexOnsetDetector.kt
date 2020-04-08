@@ -27,6 +27,10 @@ import be.tarsos.dsp.AudioProcessor
 import be.tarsos.dsp.util.PeakPicker
 import be.tarsos.dsp.util.fft.FFT
 import be.tarsos.dsp.util.fft.HannWindow
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 /**
  * A complex Domain Method onset detection function
@@ -113,15 +117,10 @@ class ComplexOnsetDetector @JvmOverloads constructor(
 
             // compute the euclidean distance in the complex domain
             // sqrt ( r_1^2 + r_2^2 - 2 * r_1 * r_2 * \cos ( \phi_1 - \phi_2 ) )
-            onsetValue += Math.sqrt(
-                Math.abs(
-                    Math.pow(
-                        oldmag[j].toDouble(),
-                        2.0
-                    ) + Math.pow(
-                        power[j].toDouble(),
-                        2.0
-                    ) - 2.0 * oldmag[j] * power[j] * Math.cos(dev1[j] - phase[j].toDouble())
+            onsetValue += sqrt(
+                abs(
+                    oldmag[j].toDouble().pow(2.0) + power[j].toDouble()
+                        .pow(2.0) - 2.0 * oldmag[j] * power[j] * cos(dev1[j] - phase[j].toDouble())
                 )
             ).toFloat()
 

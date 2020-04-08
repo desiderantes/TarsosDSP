@@ -57,11 +57,7 @@
  * ***** END LICENSE BLOCK ***** */
 package be.tarsos.dsp.util;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.*;
 
 /**
  * Concurrency utilities.
@@ -105,8 +101,6 @@ public class ConcurrencyUtils {
     public static int getNumberOfThreads() {
         return NTHREADS;
     }
-
-    ;
 
     /**
      * Sets the number of threads. If n is not a power-of-two number, then the

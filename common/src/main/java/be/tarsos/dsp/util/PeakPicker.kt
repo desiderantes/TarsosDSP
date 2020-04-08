@@ -142,6 +142,7 @@ class PeakPicker(
     private fun isPeak(index: Int): Boolean {
         return onset_peek[index] > onset_peek[index - 1] && onset_peek[index] > onset_peek[index + 1] && onset_peek[index] > 0.0
     }
+
     init {
         /* Low-pass filter cutoff [0.34, 1] */
         win_post = 5

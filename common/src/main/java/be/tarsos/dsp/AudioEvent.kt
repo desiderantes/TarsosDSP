@@ -54,6 +54,7 @@ class AudioEvent @JvmOverloads constructor(
      * The audio data encoded in bytes according to format.
      */
     private var byteBuffer: ByteArray? = null
+
     /**
      * Return a byte array with the audio data in bytes.
      * A conversion is done from float, cache accordingly on the other side...
@@ -64,7 +65,7 @@ class AudioEvent @JvmOverloads constructor(
         val length = floatBuffer.size * format.frameSize
         return (if (byteBuffer == null || byteBuffer!!.size != length) {
             ByteArray(length)
-        } else byteBuffer!!).also {  converter.toByteArray(floatBuffer,it) }
+        } else byteBuffer!!).also { converter.toByteArray(floatBuffer, it) }
 
     }
 

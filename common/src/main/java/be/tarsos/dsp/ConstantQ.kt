@@ -75,6 +75,7 @@
  */
 package be.tarsos.dsp
 
+import be.tarsos.dsp.util.TWO_PI
 import be.tarsos.dsp.util.fft.FFT
 import kotlin.math.*
 
@@ -309,13 +310,13 @@ class ConstantQ @JvmOverloads constructor(
             ).toInt()
             for (j in 0 until len) {
                 var window =
-                    -.5 * cos(2.0 * Math.PI * j.toDouble() / len.toDouble()) + .5
+                    -.5 * cos(TWO_PI * j.toDouble() / len.toDouble()) + .5
                 // Hanning Window
                 // double window = -.46*Math.cos(2.*Math.PI*(double)j/(double)len)+.54; // Hamming Window
                 window /= len.toDouble()
 
                 // Calculate kernel
-                val x = 2 * Math.PI * q * j.toDouble() / len.toDouble()
+                val x = TWO_PI * q * j.toDouble() / len.toDouble()
                 sKernel[j * 2] = (window * cos(x)).toFloat()
                 sKernel[j * 2 + 1] = (window * sin(x)).toFloat()
             }

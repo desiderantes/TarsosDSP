@@ -64,28 +64,25 @@ public class Daubechies4WaveletAudioCompression extends JFrame implements Tarsos
         this.setTitle("HaarWavelet Wavelet Audio Compression Example");
 
 
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    AudioDispatcher adp = AudioDispatcherFactory.fromPipe(source, 44100, 32, 0);
-                    AudioFormat format = JVMAudioInputStream.toAudioFormat(adp.format);
-                    coder = new Daubechies4WaveletCoder(16);
-                    Daubechies4WaveletDecoder decoder = new Daubechies4WaveletDecoder();
-                    gain = new GainProcessor(1.0);
-                    bithDeptProcessor = new BitDepthProcessor();
-                    bithDeptProcessor.bitDepth = adp.format.getSampleSizeInBits();
+        Runnable r = () -> {
+            try {
+                AudioDispatcher adp = AudioDispatcherFactory.fromPipe(source, 44100, 32, 0);
+                AudioFormat format = JVMAudioInputStream.toAudioFormat(adp.getFormat());
+                coder = new Daubechies4WaveletCoder(16);
+                Daubechies4WaveletDecoder decoder = new Daubechies4WaveletDecoder();
+                gain = new GainProcessor(1.0);
+                bithDeptProcessor = new BitDepthProcessor();
+                bithDeptProcessor.setBitDepth(adp.getFormat().getSampleSizeInBits());
 
-                    adp.addAudioProcessor(coder);
-                    adp.addAudioProcessor(decoder);
-                    adp.addAudioProcessor(gain);
-                    adp.addAudioProcessor(bithDeptProcessor);
-                    adp.addAudioProcessor(new AudioPlayer(format));
-                    // start on a new thread
-                    new Thread(adp, "Audio processor").start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                adp.addAudioProcessor(coder);
+                adp.addAudioProcessor(decoder);
+                adp.addAudioProcessor(gain);
+                adp.addAudioProcessor(bithDeptProcessor);
+                adp.addAudioProcessor(new AudioPlayer(format));
+                // start on a new thread
+                new Thread(adp, "Audio processor").start();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         };
         new Thread(r, "Start processor").start();
@@ -114,14 +111,11 @@ public class Daubechies4WaveletAudioCompression extends JFrame implements Tarsos
         gainSlider.setPaintLabels(true);
         gainSlider.setPaintTicks(true);
         final JLabel label = new JLabel("Gain: 100%");
-        gainSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent arg0) {
-                double gainValue = gainSlider.getValue() / 100.0;
-                label.setText(String.format("Gain: %3d", gainSlider.getValue()) + "%");
-                if (gain != null)
-                    gain.setGain(gainValue);
-            }
+        gainSlider.addChangeListener(arg0 -> {
+            double gainValue = gainSlider.getValue() / 100.0;
+            label.setText(String.format("Gain: %3d", gainSlider.getValue()) + "%");
+            if (gain != null)
+                gain.setGain(gainValue);
         });
 
         JPanel gainPanel = new JPanel(new BorderLayout());
@@ -139,14 +133,11 @@ public class Daubechies4WaveletAudioCompression extends JFrame implements Tarsos
         compressionSlider.setPaintLabels(true);
         compressionSlider.setPaintTicks(true);
         final JLabel label = new JLabel("Compression: 10");
-        compressionSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent arg0) {
-                int compressionValue = compressionSlider.getValue();
-                label.setText(String.format("Compression: %3d", compressionValue));
-                if (coder != null)
-                    coder.setCompression(compressionValue);
-            }
+        compressionSlider.addChangeListener(arg0 -> {
+            int compressionValue = compressionSlider.getValue();
+            label.setText(String.format("Compression: %3d", compressionValue));
+            if (coder != null)
+                coder.setCompression(compressionValue);
         });
 
         JPanel compressionPanel = new JPanel(new BorderLayout());
@@ -164,14 +155,11 @@ public class Daubechies4WaveletAudioCompression extends JFrame implements Tarsos
         bitDepthcompressionSlider.setPaintLabels(true);
         bitDepthcompressionSlider.setPaintTicks(true);
         final JLabel label = new JLabel("Bit depth (bits): " + maxValue);
-        bitDepthcompressionSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent arg0) {
-                int bitDepth = bitDepthcompressionSlider.getValue();
-                label.setText(String.format("Bit depth (bits): %3d", bitDepth));
-                if (bithDeptProcessor != null)
-                    bithDeptProcessor.bitDepth = bitDepth;
-            }
+        bitDepthcompressionSlider.addChangeListener(arg0 -> {
+            int bitDepth = bitDepthcompressionSlider.getValue();
+            label.setText(String.format("Bit depth (bits): %3d", bitDepth));
+            if (bithDeptProcessor != null)
+                bithDeptProcessor.setBitDepth(bitDepth);
         });
         JPanel compressionPanel = new JPanel(new BorderLayout());
         label.setToolTipText("Bit depth in bits.");

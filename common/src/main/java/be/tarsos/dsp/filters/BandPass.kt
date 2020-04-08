@@ -39,6 +39,7 @@
  */
 package be.tarsos.dsp.filters
 
+import be.tarsos.dsp.util.TWO_PI
 import kotlin.math.cos
 
 /**
@@ -72,7 +73,7 @@ class BandPass(freq: Float, bandWidth: Float, sampleRate: Float) :
     override fun calcCoeff() {
         val R = 1 - 3 * bw
         val fracFreq = getFrequency() / sampleRate
-        val T = 2 * cos(2 * Math.PI * fracFreq).toFloat()
+        val T = 2 * cos(TWO_PI * fracFreq).toFloat()
         val K = (1 - R * T + R * R) / (2 - T)
         a = floatArrayOf(1 - K, (K - R) * T, R * R - K)
         b = floatArrayOf(R * T, -R * R)

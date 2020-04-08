@@ -333,8 +333,7 @@ class TarsosDSPAudioFormat
         if (channels == NOT_SPECIFIED || sampleSizeInBits == NOT_SPECIFIED) NOT_SPECIFIED else (sampleSizeInBits + 7) / 8 * channels,
         sampleRate,
         bigEndian
-    ) {
-    }
+    )
 
     /**
      * Obtain an unmodifiable map of properties.
@@ -511,7 +510,12 @@ class TarsosDSPAudioFormat
         /**
          * Specifies a-law encoded data.
          */
-        ALAW
+        ALAW,
+
+        /**
+         * Specifies float point PCM data
+         */
+        PCM_FLOAT
     }
 
     companion object {
